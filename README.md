@@ -3,7 +3,7 @@
 [![Package Version](https://img.shields.io/npm/v/@cowtech/miele.svg)](https://npmjs.com/package/@cowtech/miele)
 [![Dependency Status](https://img.shields.io/gemnasium/github.com/cowtech/miele.svg)](https://gemnasium.com/github.com/cowtech/miele)
 
-CowTech React components and utilities.
+CowTech Fastify utility plugins.
 
 https://github.com/cowtech/miele
 
