@@ -1,3 +1,7 @@
+### 2018-08-26 / 0.5.0
+
+* feat: Renamed errors.
+
 ### 2018-08-26 / 0.4.0
 
 * feat: Added 401 and 403 errors.
