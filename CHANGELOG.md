@@ -1,3 +1,8 @@
+### 2018-08-26 / 0.2.0
+
+* chore: Added missing files.
+* feat: Renamed Schema to Spec and Struct to Schema. Added omitFromSchema.
+
 ### 2018-08-26 / 0.1.7
 
 * fix: Fix ref naming.
