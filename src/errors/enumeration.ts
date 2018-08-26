@@ -35,7 +35,11 @@ export const errors: { [key: string]: Struct } = {
       statusCode: { type: 'number', enum: [UNPROCESSABLE_ENTITY], example: UNPROCESSABLE_ENTITY },
       error: { type: 'string', enum: ['Unprocessable Entity'], example: 'Unprocessable Entity' },
       message: { type: 'string', pattern: '.+', example: 'Bad input data.' },
-      errors: { type: 'object', additionalProperties: { type: 'object', additionalProperties: { type: 'string' } } }
+      errors: {
+        type: 'object',
+        additionalProperties: true,
+        patternProperties: { type: 'object', additionalProperties: true, patternProperties: { type: 'string' } }
+      }
     },
     required: ['statusCode', 'error', 'message', 'errors'],
     additionalProperties: false
@@ -49,7 +53,11 @@ export const errors: { [key: string]: Struct } = {
       error: { type: 'string', enum: ['Internal Server Error'], example: 'Internal Server Error' },
       message: { type: 'string' },
       stack: { type: 'array', items: { type: 'string' } },
-      errors: { type: 'object', additionalProperties: { type: 'object', additionalProperties: { type: 'string' } } }
+      errors: {
+        type: 'object',
+        additionalProperties: true,
+        patternProperties: { type: 'object', additionalProperties: true, patternProperties: { type: 'string' } }
+      }
     },
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
