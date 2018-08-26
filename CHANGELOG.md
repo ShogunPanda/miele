@@ -1,3 +1,7 @@
+### 2018-08-26 / 0.1.7
+
+* fix: Fix ref naming.
+
 ### 2018-08-26 / 0.1.6
 
 * fix: Fix patternProperties format.
