@@ -159,6 +159,7 @@ export const customValidationPlugin = createPlugin(async function(
         (accu: Struct, [code, schema]: [string, any]) => {
           if (schema.raw || schema.empty) {
             accu[code.toString()] = () => true
+            accu[code.toString()].raw = true
           } else {
             const components = get(schema, 'components')
             const body = omit(schema, 'components')
@@ -181,7 +182,8 @@ export const customValidationPlugin = createPlugin(async function(
     // Do not re-validate the 500
     if (reply.res.statusCode === INTERNAL_SERVER_ERROR) return payload
 
-    const responsesValidator: { [key: string]: Ajv.ValidateFunction } = reply.context.config.responsesValidator
+    const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } =
+      reply.context.config.responsesValidator
 
     if (responsesValidator) {
       const code = reply.res.statusCode
@@ -190,7 +192,7 @@ export const customValidationPlugin = createPlugin(async function(
       // No validator found, it means the status code is invalid
       if (!validator) throw internal('', { message: validationMessagesFormatter.invalidResponseCode(code) })
 
-      const valid = validator({ body: JSON.parse(payload) })
+      const valid = validator({ body: validator.raw ? payload : JSON.parse(payload) })
 
       if (!valid) {
         throw internal('', {
