@@ -1,3 +1,7 @@
+### 2018-08-26 / 0.1.4
+
+* fix: Fix error declarations.
+
 ### 2018-08-26 / 0.1.3
 
 * chore: Rebuild.
