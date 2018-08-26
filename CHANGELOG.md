@@ -1,3 +1,7 @@
+### 2018-08-26 / 0.4.0
+
+* feat: Added 401 and 403 errors.
+
 ### 2018-08-26 / 0.3.0
 
 * chore: Rebuild.
