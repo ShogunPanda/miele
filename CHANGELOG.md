@@ -1,3 +1,7 @@
+### 2018-08-26 / 0.1.6
+
+* fix: Fix patternProperties format.
+
 ### 2018-08-26 / 0.1.5
 
 * fix: Fix additionalProperties usage.
