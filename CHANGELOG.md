@@ -1,3 +1,7 @@
+### 2018-08-26 / 0.1.5
+
+* fix: Fix additionalProperties usage.
+
 ### 2018-08-26 / 0.1.4
 
 * fix: Fix error declarations.
