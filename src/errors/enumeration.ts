@@ -38,7 +38,9 @@ export const errors: { [key: string]: Struct } = {
       errors: {
         type: 'object',
         additionalProperties: true,
-        patternProperties: { type: 'object', additionalProperties: true, patternProperties: { type: 'string' } }
+        patternProperties: {
+          '.+': { type: 'object', additionalProperties: true, patternProperties: { '.+': { type: 'string' } } }
+        }
       }
     },
     required: ['statusCode', 'error', 'message', 'errors'],
@@ -56,7 +58,9 @@ export const errors: { [key: string]: Struct } = {
       errors: {
         type: 'object',
         additionalProperties: true,
-        patternProperties: { type: 'object', additionalProperties: true, patternProperties: { type: 'string' } }
+        patternProperties: {
+          '.+': { type: 'object', additionalProperties: true, patternProperties: { '.+': { type: 'string' } } }
+        }
       }
     },
     required: ['statusCode', 'error', 'message'],
