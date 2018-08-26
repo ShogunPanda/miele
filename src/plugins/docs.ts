@@ -4,7 +4,7 @@ import { readFileSync } from 'fs'
 import { MOVED_PERMANENTLY } from 'http-status-codes'
 import { join } from 'path'
 import { DecoratedReply, DecoratedRequest } from '..'
-import { Route, Schema, SchemaBaseInfo } from '../schema'
+import { Route, SchemaBaseInfo, Spec } from '../spec'
 
 export const docsPlugin = createPlugin(async function(instance: fastify.FastifyInstance<{}, {}, {}>): Promise<void> {
   const routes: Array<Route> = []
@@ -23,7 +23,7 @@ export const docsPlugin = createPlugin(async function(instance: fastify.FastifyI
   ) {
     if (routes.length === 0) return
 
-    const specBase = new Schema(info, addDefaultErrors)
+    const specBase = new Spec(info, addDefaultErrors)
     specBase.addRoutes(routes)
     specBase.addModels(models)
     spec = specBase.generate()

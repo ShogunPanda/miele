@@ -1,8 +1,8 @@
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, UNPROCESSABLE_ENTITY } from 'http-status-codes'
 import { validationMessages } from '../plugins/validation'
-import { Struct } from '../schema'
+import { Schema } from '../spec'
 
-export const errors: { [key: string]: Struct } = {
+export const errors: { [key: string]: Schema } = {
   badRequest: {
     type: 'object',
     ref: `errors/${BAD_REQUEST}`,

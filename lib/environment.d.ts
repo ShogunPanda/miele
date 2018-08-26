@@ -3,7 +3,7 @@ import { ErrorObject } from 'ajv';
 import Boom from 'boom';
 import * as fastify from 'fastify';
 import { IncomingMessage } from 'http';
-import { SchemaBaseInfo } from './schema';
+import { SchemaBaseInfo } from './spec';
 declare type BoomError<T> = (message?: string, data?: T) => Boom<T>;
 export declare class ExtendedError extends Error {
     code: string;

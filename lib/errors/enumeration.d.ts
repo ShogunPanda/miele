@@ -1,4 +1,4 @@
-import { Struct } from '../schema';
+import { Schema } from '../spec';
 export declare const errors: {
-    [key: string]: Struct;
+    [key: string]: Schema;
 };

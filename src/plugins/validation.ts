@@ -7,7 +7,7 @@ import { INTERNAL_SERVER_ERROR } from 'http-status-codes'
 import { get, omit } from 'lodash'
 import { DateTime } from 'luxon'
 import { DecoratedReply, DecoratedRequest, niceJoin } from '../environment'
-import { Route, Struct } from '../schema'
+import { Route, Schema } from '../spec'
 
 export type validationFormatter = (...args: Array<any>) => string
 
@@ -151,12 +151,12 @@ export const customValidationPlugin = createPlugin(async function(
 
   // Validate routes responses
   instance.addHook('onRoute', (routeOptions: Route) => {
-    const responses: Struct | null = get(routeOptions, 'schema.response', null)
+    const responses: Schema | null = get(routeOptions, 'schema.response', null)
 
     if (responses) {
       routeOptions.config = routeOptions.config || {}
       routeOptions.config.responsesValidator = Object.entries(responses).reduce(
-        (accu: Struct, [code, schema]: [string, any]) => {
+        (accu: Schema, [code, schema]: [string, any]) => {
           if (schema.raw || schema.empty) {
             accu[code.toString()] = () => true
             accu[code.toString()].raw = true
