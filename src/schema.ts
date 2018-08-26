@@ -151,7 +151,7 @@ export class Schema implements SchemaBaseInfo {
 
   addModels(models: { [key: string]: any }) {
     for (const [name, schema] of Object.entries(models)) {
-      this.models[schema.ref || name] = omit(schema, 'ref')
+      this.models[(schema.ref || name).split('/').pop()] = omit(schema, 'ref')
     }
   }
 
