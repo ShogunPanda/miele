@@ -37,7 +37,7 @@ export interface SchemaBaseInfo {
   servers: Array<Server>
 }
 
-export function omitFromSchemaDefinition(schema: Schema, ...properties: Array<string>): Schema {
+export function omitFromSchema(schema: Schema, ...properties: Array<string>): Schema {
   if (schema.type !== 'object') {
     return schema
   }

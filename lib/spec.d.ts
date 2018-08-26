@@ -22,7 +22,7 @@ export interface SchemaBaseInfo {
     tags?: Array<Tag>;
     servers: Array<Server>;
 }
-export declare function omitFromSchemaDefinition(schema: Schema, ...properties: Array<string>): Schema;
+export declare function omitFromSchema(schema: Schema, ...properties: Array<string>): Schema;
 export declare class Spec implements SchemaBaseInfo {
     title?: string;
     description?: string;
