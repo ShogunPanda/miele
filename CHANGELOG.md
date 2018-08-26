@@ -1,3 +1,7 @@
+### 2018-08-26 / 0.3.0
+
+* chore: Rebuild.
+
 ### 2018-08-26 / 0.2.0
 
 * chore: Added missing files.
