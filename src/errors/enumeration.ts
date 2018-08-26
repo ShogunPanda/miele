@@ -27,7 +27,7 @@ export const errors: { [key: string]: Schema } = {
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
   },
-  authenticationRequired: {
+  unauthorized: {
     type: 'object',
     ref: `errors/${UNAUTHORIZED}`,
     description: 'Error returned when then user does not provide any authorization grant.',
@@ -39,7 +39,7 @@ export const errors: { [key: string]: Schema } = {
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
   },
-  forbiddenError: {
+  forbidden: {
     type: 'object',
     ref: `errors/${FORBIDDEN}`,
     description: 'Error returned when then user is not authorized to access requested resource or resources.',
