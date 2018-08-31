@@ -1,3 +1,7 @@
+### 2018-08-31 / 0.5.1
+
+* fix: Have reasonable default.
+
 ### 2018-08-26 / 0.5.0
 
 * feat: Renamed errors.
