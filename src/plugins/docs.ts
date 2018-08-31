@@ -25,7 +25,7 @@ export const docsPlugin = createPlugin(async function(instance: fastify.FastifyI
 
     const specBase = new Spec(info, addDefaultErrors)
     specBase.addRoutes(routes)
-    specBase.addModels(models)
+    specBase.addModels(models || {})
     spec = specBase.generate()
   })
 
