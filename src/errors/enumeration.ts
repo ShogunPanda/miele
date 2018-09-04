@@ -1,4 +1,5 @@
 import {
+  BAD_GATEWAY,
   BAD_REQUEST,
   FORBIDDEN,
   INTERNAL_SERVER_ERROR,
@@ -109,7 +110,7 @@ export const errors: { [key: string]: Schema } = {
         enum: ['Internal Server Error'],
         example: 'Internal Server Error'
       },
-      message: { type: 'string', description: 'The error message' },
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Server error' },
       stack: { type: 'array', items: { type: 'string' } },
       errors: {
         type: 'object',
@@ -118,6 +119,28 @@ export const errors: { [key: string]: Schema } = {
           '.+': { type: 'object', additionalProperties: true, patternProperties: { '.+': { type: 'string' } } }
         }
       }
+    },
+    required: ['statusCode', 'error', 'message'],
+    additionalProperties: false
+  },
+  gatewayError: {
+    type: 'object',
+    ref: `errors/${BAD_GATEWAY}`,
+    description: 'Error returned when a unexpected error was thrown by a upstream server.',
+    properties: {
+      statusCode: {
+        type: 'number',
+        description: 'The error code',
+        enum: [BAD_GATEWAY],
+        example: BAD_GATEWAY
+      },
+      error: {
+        type: 'string',
+        description: 'The error title',
+        enum: ['Bad Gateway'],
+        example: 'Bad Gateway'
+      },
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Upstream error' }
     },
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
