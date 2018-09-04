@@ -1,3 +1,7 @@
+### 2018-09-04 / 0.6.0
+
+* feat: Added upstream error.
+
 ### 2018-08-31 / 0.5.1
 
 * fix: Have reasonable default.
