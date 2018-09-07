@@ -1,3 +1,8 @@
+### 2018-09-07 / 0.7.1
+
+* fix: Added missing build files.
+* fix: Fixed building.
+
 ### 2018-09-07 / 0.7.0
 
 * feat: Improved typings.
