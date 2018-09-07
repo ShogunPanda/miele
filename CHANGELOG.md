@@ -1,3 +1,8 @@
+### 2018-09-07 / 0.8.1
+
+* fix: Fixed strict typing.
+* chore: Updated tsconfig.json
+
 ### 2018-09-07 / 0.8.0
 
 * feat: Export createPlugin option.
