@@ -1,3 +1,7 @@
+### 2018-09-07 / 0.7.2
+
+* fix: Fixed typing.
+
 ### 2018-09-07 / 0.7.1
 
 * fix: Added missing build files.
