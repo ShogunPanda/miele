@@ -1,12 +1,12 @@
-import * as fastify from 'fastify'
-import * as createPlugin from 'fastify-plugin'
 import { readFileSync } from 'fs'
 import { MOVED_PERMANENTLY } from 'http-status-codes'
 import { join } from 'path'
 import { DecoratedReply, DecoratedRequest } from '..'
+import { DecoratedFastify } from '../environment'
 import { Route, SchemaBaseInfo, Spec } from '../spec'
+import { createPlugin } from './utils'
 
-export const docsPlugin = createPlugin(async function(instance: fastify.FastifyInstance<{}, {}, {}>): Promise<void> {
+export const docsPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
   const routes: Array<Route> = []
   let spec: any = null
 
@@ -48,9 +48,7 @@ export const docsPlugin = createPlugin(async function(instance: fastify.FastifyI
   instance.get('/:path(openapi.json|swagger.json)', { config: { hide: true } }, async () => spec)
 })
 
-export const docsBrowserPlugin = createPlugin(async function(
-  instance: fastify.FastifyInstance<{}, {}, {}>
-): Promise<void> {
+export const docsBrowserPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
   const swaggerUIRoot = require('swagger-ui-dist').getAbsoluteFSPath()
   const swaggerUIRootIndex = readFileSync(
     join(require('swagger-ui-dist').getAbsoluteFSPath(), 'index.html'),

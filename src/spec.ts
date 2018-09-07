@@ -1,8 +1,14 @@
 import * as fastify from 'fastify'
+import { ServerResponse } from 'http'
 import { get, omit } from 'lodash'
+import { DecoratedIncomingMessage } from './environment'
 import { errors } from './errors/enumeration'
 
-export type Route = fastify.RouteOptions<{}, {}, {}>
+export type Route<TServer = {}, TRequest = DecoratedIncomingMessage, TResponse = ServerResponse> = fastify.RouteOptions<
+  TServer,
+  TRequest,
+  TResponse
+>
 export type Schema = { [key: string]: any }
 
 interface Tag {
@@ -86,6 +92,7 @@ export class Spec implements SchemaBaseInfo {
     this.models = {}
     this.parameters = {}
     this.responses = {}
+    this.servers = []
     this.errors = Object.values(addDefaultErrors ? errors : {}).reduce((accu, e) => {
       accu[e.properties.statusCode.enum[0]] = omit(e, 'ref')
       return accu

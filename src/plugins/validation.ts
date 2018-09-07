@@ -1,13 +1,12 @@
 import * as Ajv from 'ajv'
 import Boom, { badData, internal } from 'boom'
-import * as fastify from 'fastify'
-import * as createPlugin from 'fastify-plugin'
 import { ServerResponse } from 'http'
 import { INTERNAL_SERVER_ERROR } from 'http-status-codes'
 import { get, omit } from 'lodash'
 import { DateTime } from 'luxon'
-import { DecoratedReply, DecoratedRequest, niceJoin } from '../environment'
+import { DecoratedFastify, DecoratedReply, DecoratedRequest, niceJoin } from '../environment'
 import { Route, Schema } from '../spec'
+import { createPlugin } from './utils'
 
 export type validationFormatter = (...args: Array<any>) => string
 
@@ -124,9 +123,7 @@ export function convertValidationErrors(
   return badData('Bad input data.', { errors: prefix ? { [prefix]: errors } : errors })
 }
 
-export const customValidationPlugin = createPlugin(async function(
-  instance: fastify.FastifyInstance<{}, {}, {}>
-): Promise<void> {
+export const customValidationPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
   const ajv: any = new Ajv({
     // the fastify defaults
     removeAdditional: false,

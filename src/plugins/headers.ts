@@ -1,6 +1,6 @@
 import * as fastify from 'fastify'
-import * as createPlugin from 'fastify-plugin'
-import { DecoratedIncomingMessage } from '../environment'
+import { DecoratedFastify, DecoratedIncomingMessage } from '../environment'
+import { createPlugin } from './utils'
 
 export function durationInMs(startTime: [number, number]): number {
   const hrDuration = process.hrtime(startTime)
@@ -8,9 +8,7 @@ export function durationInMs(startTime: [number, number]): number {
   return hrDuration[0] * 1e3 + hrDuration[1] / 1e6
 }
 
-export const customHeadersPlugin = createPlugin(async function(
-  instance: fastify.FastifyInstance<{}, {}, {}>
-): Promise<void> {
+export const customHeadersPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
   // Register request start time
   instance.addHook('onRequest', async (req: DecoratedIncomingMessage) => {
     req.startTime = process.hrtime()

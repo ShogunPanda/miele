@@ -8,11 +8,10 @@
     "alwaysStrict": false,
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
+    "noEmit": true,
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "experimentalDecorators": true,
-    "strictNullChecks": true,
     "lib": ["es2017"],
     "baseUrl": ".",
     "declaration": true
