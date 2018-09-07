@@ -124,7 +124,7 @@ export function convertValidationErrors(
 }
 
 export const customValidationPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
-  const ajv: any = new Ajv({
+  const ajv = new Ajv({
     // the fastify defaults
     removeAdditional: false,
     useDefaults: true,
@@ -175,7 +175,7 @@ export const customValidationPlugin = createPlugin(async function(instance: Deco
     }
   })
 
-  instance.addHook('onSend', async (_req: DecoratedRequest, reply: DecoratedReply<ServerResponse>, payload: any) => {
+  instance.addHook('onSend', async (_req: DecoratedRequest, reply: DecoratedReply<ServerResponse>, payload: string) => {
     // Do not re-validate the 500
     if (reply.res.statusCode === INTERNAL_SERVER_ERROR) return payload
 

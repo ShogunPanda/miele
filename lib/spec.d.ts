@@ -45,10 +45,10 @@ export declare class Spec implements SchemaBaseInfo {
     generate(): Schema;
     addRoutes(routes: Array<Route>): void;
     addModels(models: {
-        [key: string]: any;
+        [key: string]: Schema;
     }): void;
-    parseParameters(schema: any): Schema;
-    parsePayload(schema: any): Schema | null;
+    parseParameters(schema: Schema): Schema;
+    parsePayload(schema: Schema): Schema | null;
     private parseResponses;
     private resolveReference;
 }

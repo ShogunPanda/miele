@@ -3,12 +3,12 @@ import { MOVED_PERMANENTLY } from 'http-status-codes'
 import { join } from 'path'
 import { DecoratedReply, DecoratedRequest } from '..'
 import { DecoratedFastify } from '../environment'
-import { Route, SchemaBaseInfo, Spec } from '../spec'
+import { Route, Schema, SchemaBaseInfo, Spec } from '../spec'
 import { createPlugin } from './utils'
 
 export const docsPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
   const routes: Array<Route> = []
-  let spec: any = null
+  let spec: SchemaBaseInfo | Schema | null = null
 
   // Utility to track all the routes we add
   instance.addHook('onRoute', (routeOptions: Route) => {

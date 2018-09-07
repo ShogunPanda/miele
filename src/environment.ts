@@ -18,7 +18,7 @@ export class ExtendedError extends Error {
 }
 
 export interface DecoratedFastify<
-  TConfiguration = {},
+  TConfiguration = any,
   TServer = {},
   TRequest = DecoratedIncomingMessage,
   TResponse = ServerResponse

@@ -158,7 +158,7 @@ export class Spec implements SchemaBaseInfo {
 
     // For each route
     for (const route of apiRoutes) {
-      const schema: any = get(route, 'schema', {})!
+      const schema: Schema = get(route, 'schema', {})!
       const config = get(route, 'config', {})
 
       // OpenAPI groups by path and then method
@@ -176,13 +176,13 @@ export class Spec implements SchemaBaseInfo {
     }
   }
 
-  addModels(models: { [key: string]: any }) {
+  addModels(models: { [key: string]: Schema }) {
     for (const [name, schema] of Object.entries(models)) {
       this.models[(schema.ref || name).split('/').pop()] = omit(schema, 'ref')
     }
   }
 
-  parseParameters(schema: any): Schema {
+  parseParameters(schema: Schema): Schema {
     let params = []
 
     // For each parameter section - Cannot destructure directly to 'in' since it's a reserved keyword
@@ -198,7 +198,7 @@ export class Spec implements SchemaBaseInfo {
       const required = get(specs, 'required', [])
 
       // For each property
-      for (const [name, spec] of Object.entries(get<{ [key: string]: any }>(specs, 'properties', {}))) {
+      for (const [name, spec] of Object.entries(get<{ [key: string]: Schema }>(specs, 'properties', {}))) {
         params.push({
           name,
           in: where,
@@ -212,7 +212,7 @@ export class Spec implements SchemaBaseInfo {
     return params
   }
 
-  parsePayload(schema: any): Schema | null {
+  parsePayload(schema: Schema): Schema | null {
     // No spec defined, just ignore it
     if (!schema || typeof schema.body !== 'object') {
       return null

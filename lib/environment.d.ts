@@ -10,7 +10,7 @@ export declare class ExtendedError extends Error {
     validation?: Array<ErrorObject>;
     constructor(code: string, message?: string);
 }
-export interface DecoratedFastify<TConfiguration = {}, TServer = {}, TRequest = DecoratedIncomingMessage, TResponse = ServerResponse> extends fastify.FastifyInstance<TServer, TRequest, TResponse> {
+export interface DecoratedFastify<TConfiguration = any, TServer = {}, TRequest = DecoratedIncomingMessage, TResponse = ServerResponse> extends fastify.FastifyInstance<TServer, TRequest, TResponse> {
     environment: string;
     configuration: TConfiguration;
     generateDocumentation(info: SchemaBaseInfo, models?: {
