@@ -1,3 +1,7 @@
+### 2018-09-07 / 0.8.0
+
+* feat: Export createPlugin option.
+
 ### 2018-09-07 / 0.7.3
 
 * fix: Rebuilt.
