@@ -41,7 +41,7 @@ export function handleNotFoundError(_r: DecoratedRequest, reply: DecoratedReply)
   reply.code(NOT_FOUND).send(notFound('Not found.'))
 }
 
-export function handleInternalError(error: ExtendedError | Boom, _r: DecoratedRequest, reply: DecoratedReply) {
+export function handleInternalError(error: Error | ExtendedError | Boom, _r: DecoratedRequest, reply: DecoratedReply) {
   const boom = (error as Boom).isBoom ? (error as Boom) : convertError(error as ExtendedError)
 
   reply
