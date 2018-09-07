@@ -1,3 +1,7 @@
+### 2018-09-07 / 0.7.0
+
+* feat: Improved typings.
+
 ### 2018-09-04 / 0.6.0
 
 * feat: Added upstream error.
