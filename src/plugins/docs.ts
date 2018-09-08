@@ -4,7 +4,15 @@ import { join } from 'path'
 import { DecoratedReply, DecoratedRequest } from '..'
 import { DecoratedFastify } from '../environment'
 import { Route, Schema, SchemaBaseInfo, Spec } from '../spec'
+import { SecurityScheme } from './authentication'
 import { createPlugin } from './utils'
+
+export interface GenerateDocumentationOptions {
+  info: SchemaBaseInfo
+  models?: { [key: string]: object }
+  securitySchemes?: { [key: string]: SecurityScheme }
+  skipDefaultErrors?: boolean
+}
 
 export const docsPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
   const routes: Array<Route> = []
@@ -16,16 +24,20 @@ export const docsPlugin = createPlugin(async function(instance: DecoratedFastify
   })
 
   // Utility method to generate documentation
-  instance.decorate('generateDocumentation', function(
-    info: SchemaBaseInfo,
-    models: { [key: string]: object },
-    addDefaultErrors: boolean = true
-  ) {
+  instance.decorate('generateDocumentation', function({
+    info,
+    models,
+    skipDefaultErrors,
+    securitySchemes
+  }: GenerateDocumentationOptions) {
     if (routes.length === 0) return
 
-    const specBase = new Spec(info, addDefaultErrors)
+    const specBase = new Spec(info, skipDefaultErrors)
     specBase.addRoutes(routes)
-    specBase.addModels(models || {})
+
+    if (models) specBase.addModels(models)
+    if (securitySchemes) specBase.addSecuritySchemes(securitySchemes)
+
     spec = specBase.generate()
   })
 

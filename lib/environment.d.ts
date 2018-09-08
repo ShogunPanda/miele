@@ -3,7 +3,7 @@ import { ErrorObject } from 'ajv';
 import Boom from 'boom';
 import * as fastify from 'fastify';
 import { IncomingMessage, ServerResponse } from 'http';
-import { SchemaBaseInfo } from './spec';
+import { GenerateDocumentationOptions } from './plugins/docs';
 declare type BoomError<T> = (message?: string, data?: T) => Boom<T>;
 export declare class ExtendedError extends Error {
     code: string;
@@ -13,9 +13,7 @@ export declare class ExtendedError extends Error {
 export interface DecoratedFastify<TConfiguration = any, TServer = {}, TRequest = DecoratedIncomingMessage, TResponse = ServerResponse> extends fastify.FastifyInstance<TServer, TRequest, TResponse> {
     environment: string;
     configuration: TConfiguration;
-    generateDocumentation(info: SchemaBaseInfo, models?: {
-        [key: string]: object;
-    }, addDefaultErrors?: boolean): void;
+    generateDocumentation(options: GenerateDocumentationOptions): void;
     printAllRoutes(): void;
 }
 export interface DecoratedRequest<T = IncomingMessage> extends fastify.FastifyRequest<T> {

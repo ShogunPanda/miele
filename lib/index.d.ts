@@ -1,6 +1,7 @@
 export * from './environment';
 export * from './errors/enumeration';
 export * from './errors/handling';
+export * from './plugins/authentication';
 export * from './plugins/docs';
 export * from './plugins/headers';
 export * from './plugins/utils';

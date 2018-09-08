@@ -2,7 +2,7 @@ import { ErrorObject } from 'ajv'
 import Boom from 'boom'
 import * as fastify from 'fastify'
 import { IncomingMessage, ServerResponse } from 'http'
-import { SchemaBaseInfo } from './spec'
+import { GenerateDocumentationOptions } from './plugins/docs'
 
 type BoomError<T> = (message?: string, data?: T) => Boom<T>
 
@@ -25,7 +25,7 @@ export interface DecoratedFastify<
 > extends fastify.FastifyInstance<TServer, TRequest, TResponse> {
   environment: string
   configuration: TConfiguration
-  generateDocumentation(info: SchemaBaseInfo, models?: { [key: string]: object }, addDefaultErrors?: boolean): void
+  generateDocumentation(options: GenerateDocumentationOptions): void
   printAllRoutes(): void
 }
 

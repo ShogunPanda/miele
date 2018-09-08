@@ -3,6 +3,7 @@ import { ServerResponse } from 'http'
 import { get, omit } from 'lodash'
 import { DecoratedIncomingMessage } from './environment'
 import { errors } from './errors/enumeration'
+import { SecurityScheme } from './plugins/authentication'
 
 export type Route<TServer = {}, TRequest = DecoratedIncomingMessage, TResponse = ServerResponse> = fastify.RouteOptions<
   TServer,
@@ -74,6 +75,7 @@ export class Spec implements SchemaBaseInfo {
   tags?: Array<Tag>
   servers: Array<Server>
 
+  securitySchemes: Schema
   models: Schema
   parameters: Schema
   responses: Schema
@@ -82,18 +84,20 @@ export class Spec implements SchemaBaseInfo {
 
   constructor(
     { title, description, authorName, authorUrl, authorEmail, license, version, servers, tags }: SchemaBaseInfo,
-    addDefaultErrors: boolean = true
+    skipDefaultErrors: boolean = false
   ) {
     if (!license) license = 'MIT'
 
     Object.assign(this, { title, description, authorName, authorUrl, authorEmail, license, version, servers, tags })
 
-    this.paths = {}
+    this.securitySchemes = {}
     this.models = {}
     this.parameters = {}
     this.responses = {}
     this.servers = []
-    this.errors = Object.values(addDefaultErrors ? errors : {}).reduce((accu, e) => {
+    this.paths = {}
+
+    this.errors = Object.values(skipDefaultErrors ? {} : errors).reduce<Schema>((accu, e: Schema) => {
       accu[e.properties.statusCode.enum[0]] = omit(e, 'ref')
       return accu
     }, {})
@@ -110,6 +114,7 @@ export class Spec implements SchemaBaseInfo {
       version,
       servers,
       tags,
+      securitySchemes,
       models,
       parameters,
       responses,
@@ -136,6 +141,7 @@ export class Spec implements SchemaBaseInfo {
       servers,
       tags,
       components: {
+        securitySchemes,
         models,
         parameters,
         responses,
@@ -143,6 +149,16 @@ export class Spec implements SchemaBaseInfo {
       },
       paths
     }
+  }
+
+  addModels(models: { [key: string]: Schema }) {
+    for (const [name, schema] of Object.entries(models)) {
+      this.models[(schema.ref || name).split('/').pop()] = omit(schema, 'ref')
+    }
+  }
+
+  addSecuritySchemes(schemes: { [key: string]: SecurityScheme }) {
+    Object.assign(this.securitySchemes, schemes)
   }
 
   addRoutes(routes: Array<Route>): void {
@@ -169,6 +185,7 @@ export class Spec implements SchemaBaseInfo {
       this.paths[path][(route.method as string).toLowerCase()] = {
         summary: config.description,
         tags: config.tags,
+        security: this.parseSecurity(config.security),
         parameters: this.parseParameters(schema),
         requestBody: this.parsePayload(schema),
         responses: this.parseResponses(schema.response || {})
@@ -176,13 +193,15 @@ export class Spec implements SchemaBaseInfo {
     }
   }
 
-  addModels(models: { [key: string]: Schema }) {
-    for (const [name, schema] of Object.entries(models)) {
-      this.models[(schema.ref || name).split('/').pop()] = omit(schema, 'ref')
-    }
+  private parseSecurity(securities: string | Array<string | object>): Array<Schema> {
+    // Make sure it's an array
+    if (!Array.isArray(securities)) securities = [securities]
+
+    // Transform string to the regular format, the rest is leaved as it is
+    return securities.filter(s => s).map(s => (typeof s === 'string' ? { [s]: [] } : s))
   }
 
-  parseParameters(schema: Schema): Schema {
+  private parseParameters(schema: Schema): Schema {
     let params = []
 
     // For each parameter section - Cannot destructure directly to 'in' since it's a reserved keyword
@@ -212,7 +231,7 @@ export class Spec implements SchemaBaseInfo {
     return params
   }
 
-  parsePayload(schema: Schema): Schema | null {
+  private parsePayload(schema: Schema): Schema | null {
     // No spec defined, just ignore it
     if (!schema || typeof schema.body !== 'object') {
       return null
