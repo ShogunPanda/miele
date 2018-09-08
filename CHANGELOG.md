@@ -1,3 +1,7 @@
+### 2018-09-08 / 0.9.0
+
+* feat: Added securitySchemes.
+
 ### 2018-09-07 / 0.8.1
 
 * fix: Fixed strict typing.
