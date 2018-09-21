@@ -247,7 +247,6 @@ export class Spec implements SchemaBaseInfo {
 
     return {
       description: schema.body.description,
-      required: true,
       content: {
         'application/json': {
           schema: this.resolveReference(schema.body, 'description')
