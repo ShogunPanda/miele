@@ -11,7 +11,7 @@ function convertError(error: ExtendedError): Boom {
 
   if (error.validation) {
     const prefix = error.message.split(/[\.\s]/).shift()
-    return convertValidationErrors(error.validation, prefix!)
+    return convertValidationErrors({}, error.validation, prefix!)
   } else if (error.code === 'INVALID_CONTENT_TYPE') return badRequest(validationMessages.contentType)
   else if (error.code === 'MALFORMED_JSON' || (stack[0] || '').startsWith('JSON.parse')) {
     return badRequest(validationMessages.json)

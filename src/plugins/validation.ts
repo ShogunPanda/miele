@@ -42,6 +42,7 @@ export const validationMessages: { [key: string]: string } = {
 }
 
 export function convertValidationErrors(
+  data: Schema,
   validationErrors: Array<Ajv.ErrorObject>,
   prefix: string,
   stripPrefix?: RegExp
@@ -50,9 +51,10 @@ export function convertValidationErrors(
 
   console.log(validationErrors)
   for (const e of validationErrors) {
-    // For each errorr
+    // For each error
     let key = ''
     let message = ''
+    const value = get(data, key)
 
     // Depending on the type
     switch (e.keyword) {
@@ -88,7 +90,7 @@ export function convertValidationErrors(
         key = e.dataPath.substring(1)
         const pattern = (e.params as Ajv.PatternParams).pattern
 
-        if (pattern === '.+') {
+        if (pattern === '.+' || !value.length) {
           message = validationMessages.presentString
         } else if (key === 'fields') {
           const name = pattern.match(/^\^\(\?\<([a-zA-Z]+)\>.+/)![1]
@@ -189,12 +191,13 @@ export const customValidationPlugin = createPlugin(async function(instance: Deco
       // No validator found, it means the status code is invalid
       if (!validator) throw internal('', { message: validationMessagesFormatter.invalidResponseCode(code) })
 
-      const valid = validator({ body: validator.raw ? payload : JSON.parse(payload) })
+      const data = { body: validator.raw ? payload : JSON.parse(payload) }
+      const valid = validator(data)
 
       if (!valid) {
         throw internal('', {
           message: validationMessagesFormatter.invalidResponse(code),
-          errors: convertValidationErrors(validator.errors!, 'response', /^body\./).data.errors
+          errors: convertValidationErrors(data, validator.errors!, 'response', /^body\./).data.errors
         })
       }
     }
