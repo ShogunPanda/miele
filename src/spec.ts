@@ -182,13 +182,19 @@ export class Spec implements SchemaBaseInfo {
       if (!this.paths[path]) this.paths[path] = {}
 
       // Add the route to the spec
-      this.paths[path][(route.method as string).toLowerCase()] = {
+      const method = (route.method as string).toLowerCase()
+      const requestBody = this.parsePayload(schema)
+
+      this.paths[path][method] = {
         summary: config.description,
         tags: config.tags,
         security: this.parseSecurity(config.security),
         parameters: this.parseParameters(schema),
-        requestBody: this.parsePayload(schema),
         responses: this.parseResponses(schema.response || {})
+      }
+
+      if (requestBody && method !== 'get' && method !== 'delete') {
+        this.paths[path][(route.method as string).toLowerCase()].requestBody = requestBody
       }
     }
   }
