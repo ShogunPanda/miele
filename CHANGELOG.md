@@ -1,3 +1,7 @@
+### 2018-09-21 / 0.10.1
+
+* fix: Improve validation.
+
 ### 2018-09-21 / 0.10.0
 
 * feat: Improve error handling.
