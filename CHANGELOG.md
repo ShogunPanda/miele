@@ -1,3 +1,7 @@
+### 2018-09-21 / 0.10.4
+
+* fix: Remove unneeded required property.
+
 ### 2018-09-21 / 0.10.3
 
 * fix: Remove unsupported patternProperties.
