@@ -142,10 +142,12 @@ export class Spec implements SchemaBaseInfo {
       tags,
       components: {
         securitySchemes,
-        models,
         parameters,
         responses,
-        errors
+        schemas: {
+          ...this.generateSchemaObjects(models, 'models'),
+          ...this.generateSchemaObjects(errors, 'errors')
+        }
       },
       paths
     }
@@ -283,11 +285,22 @@ export class Spec implements SchemaBaseInfo {
   private resolveReference(schema: Schema, ...keysBlacklist: Array<string>): Schema {
     if (schema.$ref || schema.ref) {
       let ref = schema.$ref || schema.ref
-      if (ref.indexOf('#/') === -1) ref = `#/components/${ref}`
+      if (ref.indexOf('#/') === -1) ref = `#/components/schemas/${ref.replace(/\//g, '.')}`
 
       return { $ref: ref }
     }
 
     return omit(schema, ['ref', '$ref'].concat(keysBlacklist))
+  }
+
+  private generateSchemaObjects(object: Schema, prefix: string): Schema {
+    return Object.entries(object).reduce(
+      (accu, [k, v]) => {
+        v.$ref = `#/components/schemas/${prefix}.${k}`
+        accu[`${prefix}.${k}`] = v
+        return accu
+      },
+      {} as Schema
+    )
   }
 }

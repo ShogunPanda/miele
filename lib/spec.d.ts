@@ -57,5 +57,6 @@ export declare class Spec implements SchemaBaseInfo {
     private parsePayload;
     private parseResponses;
     private resolveReference;
+    private generateSchemaObjects;
 }
 export {};
