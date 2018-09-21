@@ -1,3 +1,7 @@
+### 2018-09-21 / 0.10.0
+
+* feat: Improve error handling.
+
 ### 2018-09-08 / 0.9.0
 
 * feat: Added securitySchemes.
