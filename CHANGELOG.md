@@ -1,3 +1,7 @@
+### 2018-09-21 / 0.10.3
+
+* fix: Remove unsupported patternProperties.
+
 ### 2018-09-21 / 0.10.2
 
 * fix: Respect OpenAPI spec.
