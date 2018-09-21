@@ -84,10 +84,7 @@ export const errors: { [key: string]: Schema } = {
       message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Bad input data.' },
       errors: {
         type: 'object',
-        additionalProperties: true,
-        patternProperties: {
-          '.+': { type: 'object', additionalProperties: true, patternProperties: { '.+': { type: 'string' } } }
-        }
+        additionalProperties: true
       }
     },
     required: ['statusCode', 'error', 'message', 'errors'],
@@ -114,10 +111,7 @@ export const errors: { [key: string]: Schema } = {
       stack: { type: 'array', items: { type: 'string' } },
       errors: {
         type: 'object',
-        additionalProperties: true,
-        patternProperties: {
-          '.+': { type: 'object', additionalProperties: true, patternProperties: { '.+': { type: 'string' } } }
-        }
+        additionalProperties: true
       }
     },
     required: ['statusCode', 'error', 'message'],

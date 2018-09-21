@@ -296,8 +296,7 @@ export class Spec implements SchemaBaseInfo {
   private generateSchemaObjects(object: Schema, prefix: string): Schema {
     return Object.entries(object).reduce(
       (accu, [k, v]) => {
-        v.$ref = `#/components/schemas/${prefix}.${k}`
-        accu[`${prefix}.${k}`] = v
+        accu[`${prefix}.${k}`] = omit(v, 'ref', '$ref')
         return accu
       },
       {} as Schema
