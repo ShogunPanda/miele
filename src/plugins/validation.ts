@@ -90,7 +90,7 @@ export function convertValidationErrors(
         key = e.dataPath.substring(1)
         const pattern = (e.params as Ajv.PatternParams).pattern
 
-        if (pattern === '.+' || !value.length) {
+        if (pattern === '.+' || (!value || !value.length)) {
           message = validationMessages.presentString
         } else if (key === 'fields') {
           const name = pattern.match(/^\^\(\?\<([a-zA-Z]+)\>.+/)![1]
