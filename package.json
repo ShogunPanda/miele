@@ -1,6 +1,6 @@
 {
   "name": "@cowtech/miele",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "CowTech Fastify utility plugins.",
   "main": "./lib/index.js",
   "typings": "./lib/index",
