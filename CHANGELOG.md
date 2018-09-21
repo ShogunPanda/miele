@@ -1,3 +1,8 @@
+### 2018-09-21 / 0.10.2
+
+* fix: Respect OpenAPI spec.
+* fix: Only add requestBody if defined.
+
 ### 2018-09-21 / 0.10.1
 
 * fix: Improve validation.
