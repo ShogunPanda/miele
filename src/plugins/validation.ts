@@ -52,7 +52,7 @@ export function convertValidationErrors(
   console.log(validationErrors)
   for (const e of validationErrors) {
     // For each error
-    let key = ''
+    let key = e.dataPath.substring(1)
     let message = ''
     const value = get(data, key)
 
@@ -87,7 +87,6 @@ export function convertValidationErrors(
         message = validationMessagesFormatter.enum((e.params as Ajv.EnumParams).allowedValues)
         break
       case 'pattern':
-        key = e.dataPath.substring(1)
         const pattern = (e.params as Ajv.PatternParams).pattern
 
         if (pattern === '.+' || (!value || !value.length)) {
@@ -101,7 +100,6 @@ export function convertValidationErrors(
 
         break
       case 'format':
-        key = e.dataPath.substring(1)
         let reason = (e.params as Ajv.FormatParams).format
 
         // Normalize the key
