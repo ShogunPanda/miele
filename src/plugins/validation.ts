@@ -49,12 +49,17 @@ export function convertValidationErrors(
 ): Boom {
   const errors: { [key: string]: string } = {}
 
-  console.log(validationErrors)
   for (const e of validationErrors) {
     // For each error
-    let key = e.dataPath.substring(1)
+    let section = prefix
+    let baseKey = e.dataPath.substring(e.dataPath.startsWith('.') ? 1 : 0)
+    let key = baseKey
     let message = ''
-    const value = get(data, key)
+
+    if (section === 'querystring') {
+      section = 'query'
+    }
+    const value = get(data, `${section}.${key}`)
 
     // Depending on the type
     switch (e.keyword) {
@@ -112,7 +117,9 @@ export function convertValidationErrors(
     }
 
     if (message) {
-      let property = Array.from(new Set([e.dataPath.substring(1), key].filter(p => p))).join('.')
+      let property = Array.from(new Set([baseKey, key].filter(p => p)))
+        .join('.')
+        .replace(/[\[\]]/g, '')
 
       if (stripPrefix) property = property.replace(stripPrefix, '')
 

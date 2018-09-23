@@ -2,16 +2,15 @@ import Boom, { badRequest, internal, notFound } from 'boom'
 import { NOT_FOUND } from 'http-status-codes'
 import { DecoratedReply, DecoratedRequest, ExtendedError } from '../environment'
 import { convertValidationErrors, validationMessages } from '../plugins/validation'
+import { Schema } from '../spec'
 
-function convertError(error: ExtendedError): Boom {
+function convertError(data: Schema, error: ExtendedError): Boom {
   const stack = serializeErrorStack(error)
   stack.shift()
 
-  console.log(error)
-
   if (error.validation) {
-    const prefix = error.message.split(/[\.\s]/).shift()
-    return convertValidationErrors({}, error.validation, prefix!)
+    const prefix = error.message.split(/[\.\s\[]/).shift()
+    return convertValidationErrors(data, error.validation, prefix!)
   } else if (error.code === 'INVALID_CONTENT_TYPE') return badRequest(validationMessages.contentType)
   else if (error.code === 'MALFORMED_JSON' || (stack[0] || '').startsWith('JSON.parse')) {
     return badRequest(validationMessages.json)
@@ -41,8 +40,10 @@ export function handleNotFoundError(_r: DecoratedRequest, reply: DecoratedReply)
   reply.code(NOT_FOUND).send(notFound('Not found.'))
 }
 
-export function handleInternalError(error: Error | ExtendedError | Boom, _r: DecoratedRequest, reply: DecoratedReply) {
-  const boom = (error as Boom).isBoom ? (error as Boom) : convertError(error as ExtendedError)
+export function handleInternalError(error: Error | ExtendedError | Boom, req: DecoratedRequest, reply: DecoratedReply) {
+  const boom = (error as Boom).isBoom
+    ? (error as Boom)
+    : convertError({ body: req.body, query: req.query, params: req.params }, error as ExtendedError)
 
   reply
     .code(boom.output.statusCode)
