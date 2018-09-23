@@ -1,3 +1,7 @@
+### 2018-09-23 / 0.10.6
+
+* fix: Fixed error formatting.
+
 ### 2018-09-23 / 0.10.5
 
 * fix: Fixed error handling.
