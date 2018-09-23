@@ -1,3 +1,7 @@
+### 2018-09-23 / 0.10.5
+
+* fix: Fixed error handling.
+
 ### 2018-09-21 / 0.10.4
 
 * fix: Remove unneeded required property.
