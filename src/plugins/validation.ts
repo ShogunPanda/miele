@@ -153,40 +153,42 @@ export const customValidationPlugin = createPlugin(async function(instance: Deco
     return ajv.compile(schema)
   })
 
-  // Validate routes responses
-  instance.addHook('onRoute', (routeOptions: Route) => {
-    const responses: Schema | null = get(routeOptions, 'schema.response', null)
+  // Validate routes responses, only on in development
+  if (instance.environment === 'development') {
+    instance.addHook('onRoute', (routeOptions: Route) => {
+      const responses: Schema | null = get(routeOptions, 'schema.response', null)
 
-    if (responses) {
-      routeOptions.config = routeOptions.config || {}
-      routeOptions.config.responsesValidator = Object.entries(responses).reduce(
-        (accu: Schema, [code, schema]: [string, any]) => {
-          if (schema.raw || schema.empty) {
-            accu[code.toString()] = () => true
-            accu[code.toString()].raw = true
-          } else {
-            const components = get(schema, 'components')
-            const body = omit(schema, 'components')
+      if (responses) {
+        routeOptions.config = routeOptions.config || {}
+        routeOptions.config.responsesValidator = Object.entries(responses).reduce(
+          (accu: Schema, [code, schema]: [string, any]) => {
+            if (schema.raw || schema.empty) {
+              accu[code.toString()] = () => true
+              accu[code.toString()].raw = true
+            } else {
+              const components = get(schema, 'components')
+              const body = omit(schema, 'components')
 
-            accu[code.toString()] = ajv.compile({
-              type: 'object',
-              properties: { body },
-              components
-            })
-          }
+              accu[code.toString()] = ajv.compile({
+                type: 'object',
+                properties: { body },
+                components
+              })
+            }
 
-          return accu
-        },
-        {}
-      )
-    }
-  })
+            return accu
+          },
+          {}
+        )
+      }
+    })
+  }
 
   instance.addHook('onSend', async (_req: DecoratedRequest, reply: DecoratedReply<ServerResponse>, payload: string) => {
     // Do not re-validate the 500
     if (reply.res.statusCode === INTERNAL_SERVER_ERROR) return payload
 
-    const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } =
+    const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } | null =
       reply.context.config.responsesValidator
 
     if (responsesValidator) {
