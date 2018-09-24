@@ -1,3 +1,7 @@
+### 2018-09-24 / 0.10.7
+
+* fix: Disable response validation in non-development.
+
 ### 2018-09-23 / 0.10.6
 
 * fix: Fixed error formatting.
