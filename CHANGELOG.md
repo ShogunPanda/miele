@@ -1,3 +1,7 @@
+### 2018-10-21 / 0.11.0
+
+* feat: Added custom validation format support.
+
 ### 2018-09-24 / 0.10.7
 
 * fix: Disable response validation in non-development.
