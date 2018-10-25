@@ -1,3 +1,8 @@
+### 2018-10-25 / 0.12.0
+
+* chore: Rebuild.
+* feat: Added 409 errors.
+
 ### 2018-10-21 / 0.11.0
 
 * feat: Added custom validation format support.
