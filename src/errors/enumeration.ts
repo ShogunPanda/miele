@@ -71,7 +71,7 @@ export const errors: { [key: string]: Schema } = {
     description: 'Error returned when then requested resource already existss.',
     properties: {
       statusCode: { type: 'number', description: 'The error code', enum: [CONFLICT], example: CONFLICT },
-      error: { type: 'string', description: 'The error title', enum: ['Not Found'], example: 'Conflict' },
+      error: { type: 'string', description: 'The error title', enum: ['Conflict'], example: 'Conflict' },
       message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Conflict.' }
     },
     required: ['statusCode', 'error', 'message'],
