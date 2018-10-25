@@ -1,6 +1,7 @@
 import {
   BAD_GATEWAY,
   BAD_REQUEST,
+  CONFLICT,
   FORBIDDEN,
   INTERNAL_SERVER_ERROR,
   NOT_FOUND,
@@ -35,7 +36,7 @@ export const errors: { [key: string]: Schema } = {
     properties: {
       statusCode: { type: 'number', description: 'The error code', enum: [UNAUTHORIZED], example: UNAUTHORIZED },
       error: { type: 'string', description: 'The error title', enum: ['Unauthorized'], example: 'Unauthorized' },
-      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Unauthorized' }
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Unauthorized.' }
     },
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
@@ -47,7 +48,7 @@ export const errors: { [key: string]: Schema } = {
     properties: {
       statusCode: { type: 'number', description: 'The error code', enum: [FORBIDDEN], example: FORBIDDEN },
       error: { type: 'string', description: 'The error title', enum: ['Forbidden'], example: 'Forbidden' },
-      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Forbidden' }
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Forbidden.' }
     },
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
@@ -59,7 +60,19 @@ export const errors: { [key: string]: Schema } = {
     properties: {
       statusCode: { type: 'number', description: 'The error code', enum: [NOT_FOUND], example: NOT_FOUND },
       error: { type: 'string', description: 'The error title', enum: ['Not Found'], example: 'Not Found' },
-      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Not found' }
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Not found.' }
+    },
+    required: ['statusCode', 'error', 'message'],
+    additionalProperties: false
+  },
+  conflict: {
+    type: 'object',
+    ref: `errors/${CONFLICT}`,
+    description: 'Error returned when then requested resource already existss.',
+    properties: {
+      statusCode: { type: 'number', description: 'The error code', enum: [CONFLICT], example: CONFLICT },
+      error: { type: 'string', description: 'The error title', enum: ['Not Found'], example: 'Conflict' },
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Conflict.' }
     },
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
@@ -107,7 +120,7 @@ export const errors: { [key: string]: Schema } = {
         enum: ['Internal Server Error'],
         example: 'Internal Server Error'
       },
-      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Server error' },
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Server error.' },
       stack: { type: 'array', items: { type: 'string' } },
       errors: {
         type: 'object',
@@ -134,7 +147,7 @@ export const errors: { [key: string]: Schema } = {
         enum: ['Bad Gateway'],
         example: 'Bad Gateway'
       },
-      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Upstream error' }
+      message: { type: 'string', description: 'The error message', pattern: '.+', example: 'Upstream error.' }
     },
     required: ['statusCode', 'error', 'message'],
     additionalProperties: false
