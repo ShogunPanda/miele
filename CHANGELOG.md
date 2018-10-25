@@ -1,3 +1,7 @@
+### 2018-10-25 / 0.12.1
+
+* fix: Fixed invalid enum.
+
 ### 2018-10-25 / 0.12.0
 
 * chore: Rebuild.
