@@ -1,3 +1,7 @@
+### 2018-11-02 / 0.12.2
+
+* fix: Remove unused validation hook in development mode.
+
 ### 2018-10-25 / 0.12.1
 
 * fix: Fixed invalid enum.
