@@ -197,38 +197,38 @@ export const customValidationPlugin = (function(): ValidationPlugin {
           )
         }
       })
-    }
 
-    instance.addHook(
-      'onSend',
-      async (_req: DecoratedRequest, reply: DecoratedReply<ServerResponse>, payload: string) => {
-        // Do not re-validate the 500
-        if (reply.res.statusCode === INTERNAL_SERVER_ERROR) return payload
+      instance.addHook(
+        'onSend',
+        async (_req: DecoratedRequest, reply: DecoratedReply<ServerResponse>, payload: string) => {
+          // Do not re-validate the 500
+          if (reply.res.statusCode === INTERNAL_SERVER_ERROR) return payload
 
-        const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } | null =
-          reply.context.config.responsesValidator
+          const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } | null =
+            reply.context.config.responsesValidator
 
-        if (responsesValidator) {
-          const code = reply.res.statusCode
-          const validator = responsesValidator[code.toString()]
+          if (responsesValidator) {
+            const code = reply.res.statusCode
+            const validator = responsesValidator[code.toString()]
 
-          // No validator found, it means the status code is invalid
-          if (!validator) throw internal('', { message: validationMessagesFormatter.invalidResponseCode(code) })
+            // No validator found, it means the status code is invalid
+            if (!validator) throw internal('', { message: validationMessagesFormatter.invalidResponseCode(code) })
 
-          const data = { body: validator.raw ? payload : JSON.parse(payload) }
-          const valid = validator(data)
+            const data = { body: validator.raw ? payload : JSON.parse(payload) }
+            const valid = validator(data)
 
-          if (!valid) {
-            throw internal('', {
-              message: validationMessagesFormatter.invalidResponse(code),
-              errors: convertValidationErrors(data, validator.errors!, 'response', /^body\./).data.errors
-            })
+            if (!valid) {
+              throw internal('', {
+                message: validationMessagesFormatter.invalidResponse(code),
+                errors: convertValidationErrors(data, validator.errors!, 'response', /^body\./).data.errors
+              })
+            }
           }
-        }
 
-        return payload
-      }
-    )
+          return payload
+        }
+      )
+    }
   })
 
   plugin.addFormats = function(validators: CustomValidationFormatters, messages?: CustomValidationMessages): void {
