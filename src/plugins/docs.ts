@@ -20,7 +20,7 @@ export const docsPlugin = createPlugin(async function(instance: DecoratedFastify
 
   // Utility to track all the routes we add
   instance.addHook('onRoute', (routeOptions: Route) => {
-    routes.push(JSON.parse(JSON.stringify(routeOptions)))
+    routes.push(JSON.parse(JSON.stringify(routeOptions))) // Clone the object for docs generation
   })
 
   // Utility method to generate documentation
