@@ -1,6 +1,6 @@
 {
   "name": "@cowtech/miele",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "CowTech Fastify utility plugins.",
   "main": "./lib/index.js",
   "typings": "./lib/index",
@@ -45,7 +45,7 @@
     "@types/lodash": "^4.14.116",
     "@types/luxon": "^1.2.2",
     "@types/node": "^10.9.2",
-    "prettier": "^1.14.2",    
+    "prettier": "^1.14.2",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.1"
   }
