@@ -1,3 +1,8 @@
+### 2018-11-10 / 0.12.3
+
+* fix: Move Swagger UI to optional dependencies.
+* chore: Added useful comment.
+
 ### 2018-11-02 / 0.12.2
 
 * fix: Remove unused validation hook in development mode.
