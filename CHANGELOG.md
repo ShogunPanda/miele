@@ -1,3 +1,7 @@
+### 2018-11-13 / 0.13.1
+
+* fix: Fixed imports.
+
 ### 2018-11-13 / 0.13.0
 
 * feat: Require only used lodash functions.
