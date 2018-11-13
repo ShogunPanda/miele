@@ -1,3 +1,7 @@
+### 2018-11-13 / 0.13.0
+
+* feat: Require only used lodash functions.
+
 ### 2018-11-10 / 0.12.3
 
 * fix: Move Swagger UI to optional dependencies.
