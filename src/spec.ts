@@ -1,6 +1,7 @@
 import fastify from 'fastify'
 import { ServerResponse } from 'http'
-import { get, omit } from 'lodash'
+import get from 'lodash.get'
+import omit from 'lodash.omit'
 import { DecoratedIncomingMessage } from './environment'
 import { errors } from './errors/enumeration'
 import { SecurityScheme } from './plugins/authentication'
