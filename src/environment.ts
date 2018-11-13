@@ -1,6 +1,6 @@
 import { ErrorObject } from 'ajv'
 import Boom from 'boom'
-import * as fastify from 'fastify'
+import fastify from 'fastify'
 import { IncomingMessage, ServerResponse } from 'http'
 import { GenerateDocumentationOptions } from './plugins/docs'
 

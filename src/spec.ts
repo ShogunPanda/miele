@@ -1,4 +1,4 @@
-import * as fastify from 'fastify'
+import fastify from 'fastify'
 import { ServerResponse } from 'http'
 import { get, omit } from 'lodash'
 import { DecoratedIncomingMessage } from './environment'

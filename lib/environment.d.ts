@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { ErrorObject } from 'ajv';
 import Boom from 'boom';
-import * as fastify from 'fastify';
+import fastify from 'fastify';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GenerateDocumentationOptions } from './plugins/docs';
 declare type BoomError<T> = (message?: string, data?: T) => Boom<T>;

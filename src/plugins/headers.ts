@@ -1,4 +1,4 @@
-import * as fastify from 'fastify'
+import fastify from 'fastify'
 import { DecoratedFastify, DecoratedIncomingMessage } from '../environment'
 import { createPlugin } from './utils'
 

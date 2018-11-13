@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import * as fastify from 'fastify';
+import fastify from 'fastify';
 import { ServerResponse } from 'http';
 import { DecoratedIncomingMessage } from './environment';
 import { SecurityScheme } from './plugins/authentication';

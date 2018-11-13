@@ -7,6 +7,7 @@
     "outDir": "lib",
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

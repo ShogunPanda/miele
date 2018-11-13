@@ -1,5 +1,5 @@
 import { Plugin } from 'fastify'
-import * as createPluginCore from 'fastify-plugin'
+import createPluginCore from 'fastify-plugin'
 import { DecoratedFastify } from '../environment'
 
 type PluginFunction = (instance: DecoratedFastify) => Promise<void>

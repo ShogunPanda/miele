@@ -1,6 +1,6 @@
-import * as Ajv from 'ajv'
+import Ajv from 'ajv'
 import Boom, { badData, internal } from 'boom'
-import * as fastify from 'fastify'
+import fastify from 'fastify'
 import { ServerResponse } from 'http'
 import { INTERNAL_SERVER_ERROR } from 'http-status-codes'
 import { get, omit } from 'lodash'

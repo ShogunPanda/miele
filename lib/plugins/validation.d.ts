@@ -1,6 +1,6 @@
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 import Boom from 'boom';
-import * as fastify from 'fastify';
+import fastify from 'fastify';
 import { Schema } from '../spec';
 export declare type ValidationPlugin = fastify.Plugin<{}, {}, {}, {}> & {
     addFormats?: (formatters: CustomValidationFormatters, messages?: CustomValidationMessages) => void;

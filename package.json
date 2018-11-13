@@ -33,7 +33,8 @@
     "fastify-plugin": "^1.2.0",
     "fastify-static": "^0.14.0",
     "http-status-codes": "^1.3.0",
-    "lodash": "^4.17.10",
+    "lodash.get": "^4.4.2",
+    "lodash.omit": "^4.5.0",
     "luxon": "^1.3.3"
   },
   "optionalDependencies": {
@@ -42,7 +43,8 @@
   "devDependencies": {
     "@cowtech/tslint-config": "^5.11.0",
     "@types/boom": "^7.2.0",
-    "@types/lodash": "^4.14.116",
+    "@types/lodash.get": "^4.4.4",
+    "@types/lodash.omit": "^4.5.4",
     "@types/luxon": "^1.2.2",
     "@types/node": "^10.9.2",
     "prettier": "^1.14.2",
