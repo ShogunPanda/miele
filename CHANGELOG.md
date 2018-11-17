@@ -1,3 +1,7 @@
+### 2018-11-17 / 0.14.0
+
+* feat: Extract core HTTP stuff to @cowtech/favo.
+
 ### 2018-11-13 / 0.13.2
 
 * fix: Rebuilt.
