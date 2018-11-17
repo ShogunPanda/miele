@@ -1,9 +1,25 @@
-export * from './environment'
-export * from './errors/enumeration'
-export * from './errors/handling'
-export * from './plugins/authentication'
-export * from './plugins/docs'
-export * from './plugins/headers'
-export * from './plugins/utils'
-export * from './plugins/validation'
-export * from './spec'
+import { BenchmarkedIncomingMessage } from '@cowtech/favo'
+import fastify from 'fastify'
+import { IncomingMessage, ServerResponse } from 'http'
+import { GenerateDocumentationOptions } from './docs'
+
+export interface DecoratedFastify<
+  TConfiguration = any,
+  TServer = {},
+  TRequest = BenchmarkedIncomingMessage,
+  TResponse = ServerResponse
+> extends fastify.FastifyInstance<TServer, TRequest, TResponse> {
+  environment: string
+  configuration: TConfiguration
+  generateDocumentation(options: GenerateDocumentationOptions): void
+  printAllRoutes(): void
+}
+
+export interface DecoratedRequest<T = IncomingMessage> extends fastify.FastifyRequest<T> {}
+export interface DecoratedReply<T = {}> extends fastify.FastifyReply<T> {}
+
+export * from './docs'
+export * from './headers'
+export * from './responses'
+export * from './utils'
+export * from './validation'

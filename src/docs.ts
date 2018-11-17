@@ -1,10 +1,8 @@
+import { Route, Schema, SchemaBaseInfo, SecurityScheme, Spec } from '@cowtech/favo'
 import { readFileSync } from 'fs'
 import { MOVED_PERMANENTLY } from 'http-status-codes'
 import { join } from 'path'
-import { DecoratedReply, DecoratedRequest } from '..'
-import { DecoratedFastify } from '../environment'
-import { Route, Schema, SchemaBaseInfo, Spec } from '../spec'
-import { SecurityScheme } from './authentication'
+import { DecoratedFastify, DecoratedReply, DecoratedRequest } from './index'
 import { createPlugin } from './utils'
 
 export interface GenerateDocumentationOptions {

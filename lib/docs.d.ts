@@ -1,6 +1,5 @@
 /// <reference types="fastify" />
-import { SchemaBaseInfo } from '../spec';
-import { SecurityScheme } from './authentication';
+import { SchemaBaseInfo, SecurityScheme } from '@cowtech/favo';
 export interface GenerateDocumentationOptions {
     info: SchemaBaseInfo;
     models?: {
