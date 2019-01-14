@@ -1,4 +1,5 @@
 import { Route, Schema, SchemaBaseInfo, SecurityScheme, Spec } from '@cowtech/favo'
+import { Plugin } from 'fastify'
 import { readFileSync } from 'fs'
 import { MOVED_PERMANENTLY } from 'http-status-codes'
 import { join } from 'path'
@@ -12,7 +13,9 @@ export interface GenerateDocumentationOptions {
   skipDefaultErrors?: boolean
 }
 
-export const docsPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
+export const docsPlugin: Plugin<{}, {}, {}, {}> = createPlugin(async function(
+  instance: DecoratedFastify
+): Promise<void> {
   const routes: Array<Route> = []
   let spec: SchemaBaseInfo | Schema | null = null
 
@@ -27,7 +30,7 @@ export const docsPlugin = createPlugin(async function(instance: DecoratedFastify
     models,
     skipDefaultErrors,
     securitySchemes
-  }: GenerateDocumentationOptions) {
+  }: GenerateDocumentationOptions): void {
     if (routes.length === 0) return
 
     const specBase = new Spec(info, skipDefaultErrors)
@@ -40,16 +43,16 @@ export const docsPlugin = createPlugin(async function(instance: DecoratedFastify
   })
 
   // Utility method to print all routes
-  instance.decorate('printAllRoutes', function() {
+  instance.decorate('printAllRoutes', function(): void {
     if (routes.length === 0) return
 
-    routes.sort(
-      (a: Route, b: Route) =>
-        a.url !== b.url ? a.url.localeCompare(b.url) : (a.method as string).localeCompare(b.method as string)
+    routes.sort((a: Route, b: Route) =>
+      a.url !== b.url ? a.url.localeCompare(b.url) : (a.method as string).localeCompare(b.method as string)
     )
 
     const output = routes.map(
-      route => `\t\x1b[32m${route.method}\x1b[0m\t${route.url.replace(/(?:\:[\w]+|\[\:\w+\])/g, '\x1b[34m$&\x1b[39m')}`
+      (route: Route) =>
+        `\t\x1b[32m${route.method}\x1b[0m\t${route.url.replace(/(?:\:[\w]+|\[\:\w+\])/g, '\x1b[34m$&\x1b[39m')}`
     )
     instance.log.info(`Available routes:\n${output.join('\n')}`)
   })
@@ -58,7 +61,9 @@ export const docsPlugin = createPlugin(async function(instance: DecoratedFastify
   instance.get('/:path(openapi.json|swagger.json)', { config: { hide: true } }, async () => spec)
 })
 
-export const docsBrowserPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
+export const docsBrowserPlugin: Plugin<{}, {}, {}, {}> = createPlugin(async function(
+  instance: DecoratedFastify
+): Promise<void> {
   const swaggerUIRoot = require('swagger-ui-dist').getAbsoluteFSPath()
   const swaggerUIRootIndex = readFileSync(
     join(require('swagger-ui-dist').getAbsoluteFSPath(), 'index.html'),

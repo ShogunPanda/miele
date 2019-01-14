@@ -1,4 +1,4 @@
-import { convertValidationErrors, Route, Schema, validationMessages, validationMessagesFormatter } from '@cowtech/favo'
+import { convertValidationErrors, Route, Schema, validationMessages, validationMessagesFormatters } from '@cowtech/favo'
 import Ajv from 'ajv'
 import { internal } from 'boom'
 import dayjs from 'dayjs'
@@ -41,7 +41,7 @@ export const customValidationPlugin = (function(): ValidationPlugin {
     })
 
     // Assign to Fastify
-    instance.setSchemaCompiler(function(schema) {
+    instance.setSchemaCompiler(function(schema: Schema): Ajv.ValidateFunction {
       return ajv.compile(schema)
     })
 
@@ -89,14 +89,14 @@ export const customValidationPlugin = (function(): ValidationPlugin {
             const validator = responsesValidator[code.toString()]
 
             // No validator found, it means the status code is invalid
-            if (!validator) throw internal('', { message: validationMessagesFormatter.invalidResponseCode(code) })
+            if (!validator) throw internal('', { message: validationMessagesFormatters.invalidResponseCode(code) })
 
             const data = { body: validator.raw ? payload : JSON.parse(payload) }
             const valid = validator(data)
 
             if (!valid) {
               throw internal('', {
-                message: validationMessagesFormatter.invalidResponse(code),
+                message: validationMessagesFormatters.invalidResponse(code),
                 errors: convertValidationErrors(data, validator.errors!, 'response', /^body\./).data.errors
               })
             }

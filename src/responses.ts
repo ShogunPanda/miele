@@ -11,11 +11,15 @@ export function clientError<T = any>(reply: DecoratedReply, boom: BoomError<T>, 
   return error
 }
 
-export function handleNotFoundError(_r: DecoratedRequest, reply: DecoratedReply) {
+export function handleNotFoundError(_r: DecoratedRequest, reply: DecoratedReply): void {
   reply.code(NOT_FOUND).send(notFound('Not found.'))
 }
 
-export function handleInternalError(error: Error | ExtendedError | Boom, req: DecoratedRequest, reply: DecoratedReply) {
+export function handleInternalError(
+  error: Error | ExtendedError | Boom,
+  req: DecoratedRequest,
+  reply: DecoratedReply
+): void {
   const boom = (error as Boom).isBoom
     ? (error as Boom)
     : convertError({ body: req.body, query: req.query, params: req.params }, error as ExtendedError)

@@ -3,7 +3,9 @@ import fastify from 'fastify'
 import { DecoratedFastify } from './index'
 import { createPlugin } from './utils'
 
-export const customHeadersPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
+export const customHeadersPlugin: fastify.Plugin<{}, {}, {}, {}> = createPlugin(async function(
+  instance: DecoratedFastify
+): Promise<void> {
   // Register request start time
   instance.addHook('onRequest', async (req: BenchmarkedIncomingMessage) => {
     req.startTime = process.hrtime()

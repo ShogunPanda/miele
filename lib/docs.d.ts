@@ -1,5 +1,5 @@
-/// <reference types="fastify" />
 import { SchemaBaseInfo, SecurityScheme } from '@cowtech/favo';
+import { Plugin } from 'fastify';
 export interface GenerateDocumentationOptions {
     info: SchemaBaseInfo;
     models?: {
@@ -10,5 +10,5 @@ export interface GenerateDocumentationOptions {
     };
     skipDefaultErrors?: boolean;
 }
-export declare const docsPlugin: import("fastify").Plugin<{}, {}, {}, {}>;
-export declare const docsBrowserPlugin: import("fastify").Plugin<{}, {}, {}, {}>;
+export declare const docsPlugin: Plugin<{}, {}, {}, {}>;
+export declare const docsBrowserPlugin: Plugin<{}, {}, {}, {}>;
