@@ -1,3 +1,7 @@
+### 2019-01-14 / 0.14.1
+
+* fix: Improved types definitions.
+
 ### 2018-11-17 / 0.14.0
 
 * feat: Extract core HTTP stuff to @cowtech/favo.
