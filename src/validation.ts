@@ -20,7 +20,7 @@ export interface CustomValidationFormatters {
 
 export type CustomValidationMessages = { [key: string]: string }
 
-export const customValidationPlugin = (function(): ValidationPlugin {
+export const customValidationPlugin: ValidationPlugin = (function(): ValidationPlugin {
   const customFormats: { [key: string]: (raw: string) => boolean } = {}
 
   const plugin: ValidationPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
