@@ -1,20 +1,21 @@
-import { BenchmarkedIncomingMessage, durationInMs } from '@cowtech/favo'
-import fastify from 'fastify'
-import { DecoratedFastify } from './index'
-import { createPlugin } from './utils'
+import { durationInMs } from '@cowtech/favo'
+import { FastifyInstance } from 'fastify'
+import plugin from 'fastify-plugin'
+import { Server } from 'https'
+import { DecoratedReply, Reply, Request } from './models'
 
-export const customHeadersPlugin: fastify.Plugin<{}, {}, {}, {}> = createPlugin(async function(
-  instance: DecoratedFastify
-): Promise<void> {
-  // Register request start time
-  instance.addHook('onRequest', async (req: BenchmarkedIncomingMessage) => {
-    req.startTime = process.hrtime()
+export async function addCustomHeaders(instance: FastifyInstance<Server>): Promise<void> {
+  instance.decorateReply('startTime', [])
+
+  instance.addHook('onRequest', async (_req: Request, reply: Reply) => {
+    const decorated = reply as DecoratedReply
+    decorated.startTime = process.hrtime()
   })
 
-  // Add custom headers
-  instance.addHook('onSend', async (request: fastify.FastifyRequest<{}>, reply: fastify.FastifyReply<{}>) => {
-    const duration = durationInMs((request.req as BenchmarkedIncomingMessage).startTime)
-
-    reply.header('CowTech-Response-Time', `${duration.toFixed(6)} ms`)
+  instance.addHook('onSend', async (req: Request, reply: Reply) => {
+    reply.header('CowTech-Response-Id', req.id)
+    reply.header('CowTech-Response-Time', `${durationInMs((reply as DecoratedReply).startTime).toFixed(6)} ms`)
   })
-})
+}
+
+export const addCustomHeadersPlugin = plugin(addCustomHeaders, { name: 'miele-headers' })

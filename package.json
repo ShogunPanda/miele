@@ -27,28 +27,23 @@
   },
   "homepage": "https://github.com/cowtech/miele",
   "dependencies": {
-    "@cowtech/favo": "^0.5.2",
-    "ajv": "^6.7.0",
-    "boom": "^7.3.0",
-    "dayjs": "^1.8.0",
-    "fastify": "^1.13.4",
-    "fastify-plugin": "^1.4.0",
-    "fastify-static": "^1.1.0",
-    "http-status-codes": "^1.3.0",
-    "lodash.get": "^4.4.2",
-    "lodash.omit": "^4.5.0"
+    "@cowtech/favo": "^0.8.0",
+    "fastify": "git+ssh://git@github.com:ShogunPanda/fastify#pre-serialization-hook",
+    "fastify-plugin": "^1.4.0"
   },
   "optionalDependencies": {
-    "swagger-ui-dist": "^3.18.2"
+    "fastify-static": "^2.1.0",
+    "swagger-ui-dist": "^3.20.5"
   },
   "devDependencies": {
     "@cowtech/tslint-config": "^5.12.2",
     "@types/boom": "^7.2.1",
     "@types/lodash.get": "^4.4.4",
     "@types/lodash.omit": "^4.5.4",
+    "@types/lodash.set": "^4.3.4",
     "@types/node": "^10.12.18",
-    "prettier": "^1.15.3",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
+    "prettier": "^1.16.1",
+    "ts-node": "^8.0.1",
+    "typescript": "^3.2.4"
   }
 }

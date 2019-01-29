@@ -1,87 +1,130 @@
-import { Route, Schema, SchemaBaseInfo, SecurityScheme, Spec } from '@cowtech/favo'
-import { Plugin } from 'fastify'
+import { NodeError, Route, Schema, SchemaBaseInfo, Spec } from '@cowtech/favo'
+import { FastifyInstance, Plugin, RouteOptions } from 'fastify'
+import plugin from 'fastify-plugin'
 import { readFileSync } from 'fs'
+import { IncomingMessage, ServerResponse } from 'http'
 import { MOVED_PERMANENTLY } from 'http-status-codes'
-import { join } from 'path'
-import { DecoratedFastify, DecoratedReply, DecoratedRequest } from './index'
-import { createPlugin } from './utils'
+import { Server } from 'https'
+import get from 'lodash.get'
+import { resolve } from 'path'
+import { Reply, Request } from './models'
 
-export interface GenerateDocumentationOptions {
-  info: SchemaBaseInfo
-  models?: { [key: string]: object }
-  securitySchemes?: { [key: string]: SecurityScheme }
-  skipDefaultErrors?: boolean
-}
+export function printRoutes(routes: Array<Route>): void {
+  if (routes.length === 0) return
 
-export const docsPlugin: Plugin<{}, {}, {}, {}> = createPlugin(async function(
-  instance: DecoratedFastify
-): Promise<void> {
-  const routes: Array<Route> = []
-  let spec: SchemaBaseInfo | Schema | null = null
-
-  // Utility to track all the routes we add
-  instance.addHook('onRoute', (routeOptions: Route) => {
-    routes.push(JSON.parse(JSON.stringify(routeOptions))) // Clone the object for docs generation
-  })
-
-  // Utility method to generate documentation
-  instance.decorate('generateDocumentation', function({
-    info,
-    models,
-    skipDefaultErrors,
-    securitySchemes
-  }: GenerateDocumentationOptions): void {
-    if (routes.length === 0) return
-
-    const specBase = new Spec(info, skipDefaultErrors)
-    specBase.addRoutes(routes)
-
-    if (models) specBase.addModels(models)
-    if (securitySchemes) specBase.addSecuritySchemes(securitySchemes)
-
-    spec = specBase.generate()
-  })
-
-  // Utility method to print all routes
-  instance.decorate('printAllRoutes', function(): void {
-    if (routes.length === 0) return
-
-    routes.sort((a: Route, b: Route) =>
+  routes = routes
+    .filter((r: Route) => !get(r, 'config.hide', false) && !get(r, 'schema.hide', false))
+    .sort((a: Route, b: Route) =>
       a.url !== b.url ? a.url.localeCompare(b.url) : (a.method as string).localeCompare(b.method as string)
     )
 
-    const output = routes.map(
-      (route: Route) =>
-        `\t\x1b[32m${route.method}\x1b[0m\t${route.url.replace(/(?:\:[\w]+|\[\:\w+\])/g, '\x1b[34m$&\x1b[39m')}`
-    )
-    instance.log.info(`Available routes:\n${output.join('\n')}`)
+  const methodMax = Math.max(...routes.map((r: Route) => r.method.length))
+  const urlMax = Math.max(...routes.map((r: Route) => r.url.length))
+
+  const output = routes.map((route: Route) => {
+    const method = (route.method as string).padEnd(methodMax)
+    const url = route.url.padEnd(urlMax).replace(/(?:\:[\w]+|\[\:\w+\])/g, '\x1b[34m$&\x1b[39m')
+
+    return `﹒ \x1b[32m${method}\x1b[0m ${url} \x1b[37m${get(route, 'config.description', '')}\x1b[0m`
   })
 
-  // Serve the OpenAPI/Swagger JSON file
-  instance.get('/:path(openapi.json|swagger.json)', { config: { hide: true } }, async () => spec)
-})
+  console.log(`Available routes:\n${output.join('\n')}`)
+}
 
-export const docsBrowserPlugin: Plugin<{}, {}, {}, {}> = createPlugin(async function(
-  instance: DecoratedFastify
-): Promise<void> {
-  const swaggerUIRoot = require('swagger-ui-dist').getAbsoluteFSPath()
-  const swaggerUIRootIndex = readFileSync(
-    join(require('swagger-ui-dist').getAbsoluteFSPath(), 'index.html'),
-    'utf8'
-  ).replace(/url: "(.*)"/, 'url: "/openapi.json"')
+export function addDocumentationUI(instance: FastifyInstance<Server>): void {
+  let swaggerUIRoot: string | null = null
+  let staticPlugin: Plugin<Server, IncomingMessage, ServerResponse, any> | null = null
+
+  try {
+    swaggerUIRoot = require('swagger-ui-dist').getAbsoluteFSPath()
+  } catch (e) {
+    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') throw e
+
+    instance.log.warn(
+      'In order to enable UI feature of @cowtech/miele addDocumentationPlugin, please install swagger-ui-dist.'
+    )
+  }
+
+  try {
+    staticPlugin = require('fastify-static')
+  } catch (e) {
+    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') throw e
+
+    instance.log.warn(
+      'In order to enable UI feature of @cowtech/miele addDocumentationPlugin, please install fastify-static.'
+    )
+  }
+
+  if (!swaggerUIRoot || !staticPlugin) return
+
+  const swaggerUIRootIndex = readFileSync(resolve(swaggerUIRoot, 'index.html'), 'utf8').replace(
+    /url: "(.*)"/,
+    'url: "/openapi.json"'
+  )
 
   // Add the Swagger UI
-  instance.get('/docs', { config: { hide: true } }, (_r: DecoratedRequest, reply: DecoratedReply) => {
-    reply.redirect(MOVED_PERMANENTLY, '/docs/')
+  instance.route({
+    method: 'GET',
+    url: '/docs',
+    handler(_req: Request, reply: Reply): void {
+      reply.redirect(MOVED_PERMANENTLY, '/docs/')
+    },
+    config: {
+      description: 'Gets OpenAPI definition in a browseable format',
+      hide: true
+    }
   })
 
-  instance.register(require('fastify-static'), { root: swaggerUIRoot, prefix: '/docs/', config: { hide: true } })
+  instance.register(staticPlugin, {
+    root: swaggerUIRoot,
+    prefix: '/docs/',
+    schemaHide: true
+  })
 
   // This hook is required because we have to serve the patched index file
-  instance.addHook('preHandler', async (request: DecoratedRequest, reply: DecoratedReply) => {
+  instance.addHook('preHandler', async (request: Request, reply: Reply) => {
     if (request.req.url!.match(/^(?:\/docs\/(?:index\.html)?)$/)) {
       reply.header('Content-Type', 'text/html; charset=UTF-8')
       reply.send(swaggerUIRootIndex)
     }
   })
-})
+}
+
+async function addDocumentation(
+  instance: FastifyInstance<Server>,
+  {
+    spec,
+    skipDefaultErrors,
+    printRoutes: shouldPrintRoutes,
+    addUI
+  }: { spec?: SchemaBaseInfo; skipDefaultErrors?: boolean; printRoutes?: boolean; addUI?: boolean }
+): Promise<void> {
+  if (shouldPrintRoutes) {
+    const routes: Array<Route> = []
+
+    // Utility to track all the routes we add
+    instance.addHook('onRoute', (route: RouteOptions<Server, IncomingMessage, ServerResponse>) => routes.push(route))
+
+    instance.ready((err: Error) => {
+      if (!err) printRoutes(routes)
+    })
+  }
+
+  // Setup OpenAPI
+  if (spec) {
+    const schema: Schema = new Spec(spec, skipDefaultErrors).generate()
+
+    for (const url of ['/openapi.json', '/swagger.json']) {
+      instance.route({
+        method: 'GET',
+        url,
+        handler: async () => schema,
+        config: { description: 'Gets OpenAPI definition' }
+      })
+    }
+
+    if (addUI) addDocumentationUI(instance)
+  }
+}
+
+export const addDocumentationPlugin = plugin(addDocumentation, { name: 'miele-docs' })

@@ -1,117 +1,109 @@
-import { convertValidationErrors, Route, Schema, validationMessages, validationMessagesFormatters } from '@cowtech/favo'
+import {
+  convertValidationErrors,
+  CustomValidationFormatters,
+  Route,
+  Schema,
+  validationMessagesFormatters
+} from '@cowtech/favo'
 import Ajv from 'ajv'
 import { internal } from 'boom'
-import dayjs from 'dayjs'
-import fastify from 'fastify'
-import { ServerResponse } from 'http'
 import { INTERNAL_SERVER_ERROR } from 'http-status-codes'
 import get from 'lodash.get'
 import omit from 'lodash.omit'
-import { DecoratedFastify, DecoratedReply, DecoratedRequest } from './index'
-import { createPlugin } from './utils'
+import set from 'lodash.set'
+import { Reply, Request } from './models'
 
-export type ValidationPlugin = fastify.Plugin<{}, {}, {}, {}> & {
-  addFormats?: (formatters: CustomValidationFormatters, messages?: CustomValidationMessages) => void
-}
+export const compiledSchemas: Map<Schema, Ajv.ValidateFunction> = new Map<Schema, Ajv.ValidateFunction>()
 
-export interface CustomValidationFormatters {
-  [key: string]: (raw: string) => boolean
-}
-
-export type CustomValidationMessages = { [key: string]: string }
-
-export const customValidationPlugin: ValidationPlugin = (function(): ValidationPlugin {
-  const customFormats: { [key: string]: (raw: string) => boolean } = {}
-
-  const plugin: ValidationPlugin = createPlugin(async function(instance: DecoratedFastify): Promise<void> {
-    const ajv = new Ajv({
-      // the fastify defaults
-      removeAdditional: false,
-      useDefaults: true,
-      coerceTypes: true,
-      allErrors: true,
-      unknownFormats: true,
-      // Add custom validation
-      formats: {
-        'date-time'(raw: string): boolean {
-          return dayjs(raw).isValid()
-        },
-        ...customFormats
-      }
-    })
-
-    // Assign to Fastify
-    instance.setSchemaCompiler(function(schema: Schema): Ajv.ValidateFunction {
-      return ajv.compile(schema)
-    })
-
-    // Validate routes responses, only on in development
-    if (instance.environment === 'development') {
-      instance.addHook('onRoute', (routeOptions: Route) => {
-        const responses: Schema | null = get(routeOptions, 'schema.response', null)
-
-        if (responses) {
-          routeOptions.config = routeOptions.config || {}
-          routeOptions.config.responsesValidator = Object.entries(responses).reduce(
-            (accu: Schema, [code, schema]: [string, any]) => {
-              if (schema.raw || schema.empty) {
-                accu[code.toString()] = () => true
-                accu[code.toString()].raw = true
-              } else {
-                const components = get(schema, 'components')
-                const body = omit(schema, 'components')
-
-                accu[code.toString()] = ajv.compile({
-                  type: 'object',
-                  properties: { body },
-                  components
-                })
-              }
-
-              return accu
-            },
-            {}
-          )
-        }
-      })
-
-      instance.addHook(
-        'onSend',
-        async (_req: DecoratedRequest, reply: DecoratedReply<ServerResponse>, payload: string) => {
-          // Do not re-validate the 500
-          if (reply.res.statusCode === INTERNAL_SERVER_ERROR) return payload
-
-          const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } | null =
-            reply.context.config.responsesValidator
-
-          if (responsesValidator) {
-            const code = reply.res.statusCode
-            const validator = responsesValidator[code.toString()]
-
-            // No validator found, it means the status code is invalid
-            if (!validator) throw internal('', { message: validationMessagesFormatters.invalidResponseCode(code) })
-
-            const data = { body: validator.raw ? payload : JSON.parse(payload) }
-            const valid = validator(data)
-
-            if (!valid) {
-              throw internal('', {
-                message: validationMessagesFormatters.invalidResponse(code),
-                errors: convertValidationErrors(data, validator.errors!, 'response', /^body\./).data.errors
-              })
-            }
-          }
-
-          return payload
-        }
-      )
-    }
+export function createAjv(customFormats: CustomValidationFormatters): Ajv.Ajv {
+  return new Ajv({
+    // The fastify defaults
+    removeAdditional: false,
+    useDefaults: true,
+    coerceTypes: true,
+    allErrors: true,
+    unknownFormats: true,
+    // Add custom validation
+    formats: customFormats
   })
+}
 
-  plugin.addFormats = function(validators: CustomValidationFormatters, messages?: CustomValidationMessages): void {
-    Object.assign(customFormats, validators)
-    Object.assign(validationMessages, messages || {})
+export async function validateResponse(_req: Request, reply: Reply, payload: any): Promise<any> {
+  const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } | null =
+    reply.context.config.responsesValidator
+
+  // Do not re-validate the 500
+  if (responsesValidator && reply.res.statusCode !== INTERNAL_SERVER_ERROR) {
+    const code = reply.res.statusCode
+    const validator = responsesValidator[code.toString()]
+
+    // No validator found, it means the status code is invalid
+    if (!validator) throw internal('', { message: validationMessagesFormatters.invalidResponseCode(code) })
+
+    const valid = validator(payload)
+
+    if (!valid) {
+      throw internal('', {
+        message: validationMessagesFormatters.invalidResponse(code),
+        errors: convertValidationErrors(payload, validator.errors!, 'response', /^body\./).data.errors
+      })
+    }
   }
 
-  return plugin
-})()
+  return payload
+}
+
+export function addResponsesValidation(route: Route): void {
+  const responses: Schema | null = get(route, 'schema.response', null)
+  if (!responses) return
+
+  const routeCustomFormats = get(route, 'config.customFormats')
+
+  route.config = route.config || {}
+  route.config.responsesValidator = Object.entries(responses).reduce((accu: Schema, [code, schema]: [string, any]) => {
+    const cachedValidation = compiledSchemas.get(schema)
+
+    if (cachedValidation) {
+      accu[code.toString()] = cachedValidation
+      return accu
+    }
+
+    if (schema.raw || schema.empty) {
+      accu[code.toString()] = () => true
+      accu[code.toString()].raw = true
+    } else {
+      // Add route models to the schema components
+      const models = get(route, 'config.models', false)
+
+      if (models) {
+        const baseName = (schema.ref || '').replace(/^models\//, '')
+        if (baseName.length && models[baseName]) {
+          /*
+            First of all, if the schema has a ref and it's also referenced inside the models,
+            make sure it's replace in order to avoid a circular JSON reference.
+          */
+          schema = {
+            $ref: `#/components/schemas/models.${baseName}`,
+            components: {
+              schemas: {}
+            }
+          }
+        }
+
+        // Make sure schemas hierarchy exists
+        set(schema, 'components.schemas', get(schema, 'components.schemas', {}))
+
+        // Assign models
+        for (const [name, definition] of Object.entries(models)) {
+          schema.components.schemas[`models.${name}`] = omit(definition, ['description', 'ref'])
+        }
+      }
+
+      const compiled = createAjv(routeCustomFormats).compile(omit(schema, 'description', 'ref'))
+      accu[code.toString()] = compiled
+      compiledSchemas.set(schema, compiled)
+    }
+
+    return accu
+  }, {})
+}
