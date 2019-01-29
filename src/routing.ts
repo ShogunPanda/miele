@@ -58,10 +58,9 @@ export async function loadRoutes(
         }
       }
 
-      const routeCustomFormats = get(route, 'config.customFormats')
+      ensureResponsesSchemas(route)
 
-      if (enableResponsesValidation) ensureResponsesSchemas(route)
-      if (customFormats) Object.assign(customFormats, routeCustomFormats)
+      if (customFormats) Object.assign(customFormats, get(route, 'config.customFormats'))
 
       instance.route(route)
     }
