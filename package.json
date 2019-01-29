@@ -33,7 +33,8 @@
   },
   "optionalDependencies": {
     "fastify-static": "^2.1.0",
-    "swagger-ui-dist": "^3.20.5"
+    "swagger-ui-dist": "^3.20.5",
+    "ws": "^6.1.3"
   },
   "devDependencies": {
     "@cowtech/tslint-config": "^5.12.2",
