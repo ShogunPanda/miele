@@ -28,7 +28,7 @@
   "homepage": "https://github.com/cowtech/miele",
   "dependencies": {
     "@cowtech/favo": "^0.8.0",
-    "fastify": "git+ssh://git@github.com:ShogunPanda/fastify#pre-serialization-hook",
+    "fastify": "git+https://git@github.com/ShogunPanda/fastify.git#pre-serialization-hook",
     "fastify-plugin": "^1.4.0"
   },
   "optionalDependencies": {
