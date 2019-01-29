@@ -29,13 +29,13 @@ export function createAjv(customFormats: CustomValidationFormatters): Ajv.Ajv {
 }
 
 export async function validateResponse(_req: Request, reply: Reply, payload: any): Promise<any> {
-  const responsesValidator: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } | null =
-    reply.context.config.responsesValidator
+  const responsesValidators: { [key: string]: Ajv.ValidateFunction & { raw?: boolean } } | null =
+    reply.context.config.responsesValidators
 
   // Do not re-validate the 500
-  if (responsesValidator && reply.res.statusCode !== INTERNAL_SERVER_ERROR) {
+  if (responsesValidators && reply.res.statusCode !== INTERNAL_SERVER_ERROR) {
     const code = reply.res.statusCode
-    const validator = responsesValidator[code.toString()]
+    const validator = responsesValidators[code.toString()]
 
     // No validator found, it means the status code is invalid
     if (!validator) throw internal('', { message: validationMessagesFormatters.invalidResponseCode(code) })
@@ -53,14 +53,14 @@ export async function validateResponse(_req: Request, reply: Reply, payload: any
   return payload
 }
 
-export function addResponsesValidation(route: Route): void {
+export function ensureResponsesSchemas(route: Route): void {
   const responses: Schema | null = get(route, 'schema.response', null)
   if (!responses) return
 
   const routeCustomFormats = get(route, 'config.customFormats')
 
   route.config = route.config || {}
-  route.config.responsesValidator = Object.entries(responses).reduce((accu: Schema, [code, schema]: [string, any]) => {
+  route.config.responsesValidators = Object.entries(responses).reduce((accu: Schema, [code, schema]: [string, any]) => {
     const cachedValidation = compiledSchemas.get(schema)
 
     if (cachedValidation) {

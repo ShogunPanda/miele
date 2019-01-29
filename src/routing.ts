@@ -7,7 +7,7 @@ import { Server } from 'https'
 import get from 'lodash.get'
 import omit from 'lodash.omit'
 import set from 'lodash.set'
-import { addResponsesValidation, createAjv, validateResponse } from './validation'
+import { createAjv, ensureResponsesSchemas, validateResponse } from './validation'
 
 export async function loadRoutes(
   instance: FastifyInstance<Server>,
@@ -60,7 +60,7 @@ export async function loadRoutes(
 
       const routeCustomFormats = get(route, 'config.customFormats')
 
-      if (enableResponsesValidation) addResponsesValidation(route)
+      if (enableResponsesValidation) ensureResponsesSchemas(route)
       if (customFormats) Object.assign(customFormats, routeCustomFormats)
 
       instance.route(route)
