@@ -20,7 +20,9 @@ export async function loadRoutes(
     const routes: Array<Route> = (required.routes || [required.route]).filter((r: Route) => r)
 
     for (const route of routes) {
-      if (!route.config) route.config = {}
+      if (!route.config) {
+        route.config = {}
+      }
 
       // First of all, if the route has custom models defined, prepare for inclusion
       const models = get(route, 'config.models', false)
@@ -60,7 +62,9 @@ export async function loadRoutes(
 
       ensureResponsesSchemas(route)
 
-      if (customFormats) Object.assign(customFormats, get(route, 'config.customFormats'))
+      if (customFormats) {
+        Object.assign(customFormats, get(route, 'config.customFormats'))
+      }
 
       instance.route(route)
     }
@@ -69,7 +73,9 @@ export async function loadRoutes(
   // Override fastify schema compiler
   instance.setSchemaCompiler((schema: Schema) => createAjv(customFormats).compile(schema))
 
-  if (enableResponsesValidation) instance.addHook('preSerialization', validateResponse)
+  if (enableResponsesValidation) {
+    instance.addHook('preSerialization', validateResponse)
+  }
 }
 
 export const loadRoutesPlugin = plugin(loadRoutes, { name: 'miele-routing', dependencies: ['miele-docs'] })

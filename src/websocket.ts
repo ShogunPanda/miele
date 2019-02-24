@@ -4,15 +4,19 @@ import plugin from 'fastify-plugin'
 import { Server } from 'https'
 
 export async function addWebsocket(instance: FastifyInstance<Server>, { library }: { library: string }): Promise<void> {
-  if (!library) library = 'ws'
   let ws: any = null
+
+  if (!library) {
+    library = 'ws'
+  }
 
   try {
     const Klass = require(library).Server
     ws = new Klass({ server: instance.server })
   } catch (e) {
-    if ((e as NodeError).code === 'MODULE_NOT_FOUND')
+    if ((e as NodeError).code === 'MODULE_NOT_FOUND') {
       throw new Error(`In order to enable WebSocket support, please install the ${library} module.`)
+    }
 
     throw e
   }

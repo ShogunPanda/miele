@@ -10,7 +10,9 @@ import { resolve } from 'path'
 import { Reply, Request } from './models'
 
 export function printRoutes(routes: Array<Route>): void {
-  if (routes.length === 0) return
+  if (routes.length === 0) {
+    return
+  }
 
   routes = routes
     .filter((r: Route) => !get(r, 'config.hide', false) && !get(r, 'schema.hide', false))
@@ -38,7 +40,9 @@ export function addDocumentationUI(instance: FastifyInstance<Server>): void {
   try {
     swaggerUIRoot = require('swagger-ui-dist').getAbsoluteFSPath()
   } catch (e) {
-    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') throw e
+    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') {
+      throw e
+    }
 
     instance.log.warn(
       'In order to enable UI feature of @cowtech/miele addDocumentationPlugin, please install swagger-ui-dist.'
@@ -48,14 +52,18 @@ export function addDocumentationUI(instance: FastifyInstance<Server>): void {
   try {
     staticPlugin = require('fastify-static')
   } catch (e) {
-    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') throw e
+    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') {
+      throw e
+    }
 
     instance.log.warn(
       'In order to enable UI feature of @cowtech/miele addDocumentationPlugin, please install fastify-static.'
     )
   }
 
-  if (!swaggerUIRoot || !staticPlugin) return
+  if (!swaggerUIRoot || !staticPlugin) {
+    return
+  }
 
   const swaggerUIRootIndex = readFileSync(resolve(swaggerUIRoot, 'index.html'), 'utf8').replace(
     /url: "(.*)"/,
@@ -106,7 +114,9 @@ async function addDocumentation(
     instance.addHook('onRoute', (route: RouteOptions<Server, IncomingMessage, ServerResponse>) => routes.push(route))
 
     instance.ready((err: Error) => {
-      if (!err) printRoutes(routes)
+      if (!err) {
+        printRoutes(routes)
+      }
     })
   }
 
@@ -123,7 +133,9 @@ async function addDocumentation(
       })
     }
 
-    if (addUI) addDocumentationUI(instance)
+    if (addUI) {
+      addDocumentationUI(instance)
+    }
   }
 }
 

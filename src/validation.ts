@@ -38,7 +38,9 @@ export async function validateResponse(_req: Request, reply: Reply, payload: any
     const validator = responsesValidators[code.toString()]
 
     // No validator found, it means the status code is invalid
-    if (!validator) throw internal('', { message: validationMessagesFormatters.invalidResponseCode(code) })
+    if (!validator) {
+      throw internal('', { message: validationMessagesFormatters.invalidResponseCode(code) })
+    }
 
     const valid = validator(payload)
 
@@ -55,7 +57,9 @@ export async function validateResponse(_req: Request, reply: Reply, payload: any
 
 export function ensureResponsesSchemas(route: Route): void {
   const responses: Schema | null = get(route, 'schema.response', null)
-  if (!responses) return
+  if (!responses) {
+    return
+  }
 
   const routeCustomFormats = get(route, 'config.customFormats')
 
