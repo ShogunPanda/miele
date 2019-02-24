@@ -1,3 +1,13 @@
+### 2019-02-24 / 0.15.0
+
+* chore: Updated dependencies.
+* fix: Minor fix.
+* feat: Fix responses validation in production mode.
+* chore: Minor fix.
+* chore: Added missing files.
+* feat: Added WebSocket support.
+* feat: Extract more stuff to @cowtech/favo.
+
 ### 2019-01-17 / 0.14.2
 
 * chore: Lint fix.
