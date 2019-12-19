@@ -1,3 +1,7 @@
+### 2019-12-19 / 0.15.4
+
+- chore: Dependencies upgrade.
+
 ### 2019-12-19 / 0.15.3
 
 - chore: Fixed GitHub location.
