@@ -1,6 +1,6 @@
 {
   "name": "@cowtech/miele",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "CowTech Fastify utility plugins.",
   "homepage": "https://github.com/cowtech/miele",
   "repository": "github:cowtech/miele",
