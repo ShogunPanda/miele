@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@cowtech/favo@^0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@cowtech/favo/-/favo-0.8.3.tgz#57749b9c8d251c3fcc18a5e3e5d1f0b5249fe3c4"
-  integrity sha512-jnjvasduTX/HrdczfWuL3K9wEwWCAEg7ldlxGl6rZewyyu17214TFTPEoH4mlneO+vVisnwxwrodRk4VMP19Qg==
+"@cowtech/favo@^0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@cowtech/favo/-/favo-0.8.4.tgz#df9bc4b2462df11bb69f68f3c8fc5f46785cafa7"
+  integrity sha512-TrucYOBfE5Wu9Z84wa11BiIy0Yr688Wt6d2bDeiYLN9m3JO9N805B51H3myP4RiNDosh+DAlEU2NPnDS+ZB6pw==
   dependencies:
     ajv "^6.10.2"
     glob "^7.1.6"
