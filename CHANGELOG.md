@@ -1,3 +1,8 @@
+### 2019-12-19 / 0.15.1
+
+- chore: Added missing files.
+- chore: Pre-deprecation cleanup.
+
 ### 2019-02-24 / 0.15.0
 
 * chore: Updated dependencies.
