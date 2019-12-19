@@ -1,4 +1,5 @@
-import { CustomValidationFormatters, Route, Schema } from '@cowtech/favo'
+import { Route, Schema } from '@cowtech/favo'
+import Ajv from 'ajv'
 import { FastifyInstance } from 'fastify'
 import plugin from 'fastify-plugin'
 // @ts-ignore
@@ -7,12 +8,16 @@ import { Server } from 'https'
 import get from 'lodash.get'
 import omit from 'lodash.omit'
 import set from 'lodash.set'
-import { createAjv, ensureResponsesSchemas, validateResponse } from './validation'
+
+export interface CustomValidationFormatters {
+  [key: string]: (raw: any) => boolean
+}
 
 export async function loadRoutes(
   instance: FastifyInstance<Server>,
-  { routesFolder, enableResponsesValidation }: { routesFolder: string; enableResponsesValidation?: boolean }
+  { routesFolder }: { routesFolder: string }
 ): Promise<void> {
+  // Maintain a list of custom validators defined in the routes
   const customFormats: CustomValidationFormatters = {}
 
   for (const file of glob(`${routesFolder}/**/*(*.ts|*.js)`)) {
@@ -25,7 +30,7 @@ export async function loadRoutes(
       }
 
       // First of all, if the route has custom models defined, prepare for inclusion
-      const models = get(route, 'config.models', false)
+      const models: { [key: string]: Schema } = get(route, 'config.models', false)
 
       if (models) {
         const normalizedModels: { [key: string]: Schema } = {}
@@ -60,8 +65,6 @@ export async function loadRoutes(
         }
       }
 
-      ensureResponsesSchemas(route)
-
       if (customFormats) {
         Object.assign(customFormats, get(route, 'config.customFormats'))
       }
@@ -70,12 +73,21 @@ export async function loadRoutes(
     }
   }
 
-  // Override fastify schema compiler
-  instance.setSchemaCompiler((schema: Schema) => createAjv(customFormats).compile(schema))
+  // Override fastify schema compiler to add additional validations
+  instance.setSchemaCompiler((schema: Schema) => {
+    const compiler = new Ajv({
+      // The fastify defaults
+      removeAdditional: false,
+      useDefaults: true,
+      coerceTypes: true,
+      allErrors: true,
+      unknownFormats: true,
+      // Add custom validation
+      formats: customFormats
+    })
 
-  if (enableResponsesValidation) {
-    instance.addHook('preSerialization', validateResponse)
-  }
+    return compiler.compile(schema)
+  })
 }
 
 export const loadRoutesPlugin = plugin(loadRoutes, { name: 'miele-routing', dependencies: ['miele-docs'] })

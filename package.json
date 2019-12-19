@@ -2,49 +2,50 @@
   "name": "@cowtech/miele",
   "version": "0.15.0",
   "description": "CowTech Fastify utility plugins.",
-  "main": "./lib/index.js",
-  "typings": "./lib/index",
-  "types": "./lib/index",
-  "files": [
-    "lib",
-    "README.md",
-    "CHANGELOG.md"
-  ],
-  "scripts": {
-    "prebuild": "rm -rf lib/* && ./node_modules/.bin/tslint --project tsconfig.json -t stylish",
-    "build": "tsc -p .",
-    "postpublish": "git push origin && git push origin -f --tags"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cowtech/miele"
-  },
+  "homepage": "https://github.com/cowtech/miele",
+  "repository": "github:cowtech/miele",
   "keywords": [],
-  "author": "Shogun <shogun@cowtech.it>",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cowtech/miele/issues"
   },
-  "homepage": "https://github.com/cowtech/miele",
+  "author": "Shogun <shogun@cowtech.it>",
+  "license": "ISC",
+  "files": [
+    "lib",
+    "types",
+    "CHANGELOG.md",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "main": "lib/index.js",
+  "typings": "types/index.d.ts",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json -t stylish src/*.ts",
+    "ci": "yarn lint",
+    "prebuild": "rm -rf lib/* types/* && yarn lint",
+    "build": "tsc -p .",
+    "prepublishOnly": "yarn ci",
+    "postpublish": "git push origin && git push origin -f --tags"
+  },
   "dependencies": {
-    "@cowtech/favo": "^0.8.2",
-    "fastify": "^2.0.0-rc.6",
-    "fastify-plugin": "^1.5.0"
+    "@cowtech/favo": "^0.8.3",
+    "fastify": "^2.11.0",
+    "fastify-plugin": "^1.6.0"
   },
   "optionalDependencies": {
-    "fastify-static": "^2.1.0",
-    "swagger-ui-dist": "^3.20.9",
-    "ws": "^6.1.4"
+    "fastify-static": "^2.5.1",
+    "swagger-ui-dist": "^3.24.3",
+    "ws": "^7.2.1"
   },
   "devDependencies": {
-    "@cowtech/tslint-config": "^5.12.4",
-    "@types/boom": "^7.2.1",
-    "@types/lodash.get": "^4.4.5",
-    "@types/lodash.omit": "^4.5.5",
-    "@types/lodash.set": "^4.3.5",
-    "@types/node": "^11.9.5",
-    "prettier": "^1.16.4",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.3.3333"
+    "@cowtech/tslint-config": "^5.13.0",
+    "@types/lodash.get": "^4.4.6",
+    "@types/lodash.omit": "^4.5.6",
+    "@types/lodash.set": "^4.3.6",
+    "@types/node": "^12.12.21",
+    "prettier": "^1.19.1",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
   }
 }

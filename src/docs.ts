@@ -1,4 +1,4 @@
-import { NodeError, Route, Schema, SchemaBaseInfo, Spec } from '@cowtech/favo'
+import { Route, Schema, SchemaBaseInfo, Spec } from '@cowtech/favo'
 import { FastifyInstance, Plugin, RouteOptions } from 'fastify'
 import plugin from 'fastify-plugin'
 import { readFileSync } from 'fs'
@@ -40,7 +40,7 @@ export function addDocumentationUI(instance: FastifyInstance<Server>): void {
   try {
     swaggerUIRoot = require('swagger-ui-dist').getAbsoluteFSPath()
   } catch (e) {
-    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') {
+    if ((e as NodeJS.ErrnoException).code !== 'MODULE_NOT_FOUND') {
       throw e
     }
 
@@ -52,7 +52,7 @@ export function addDocumentationUI(instance: FastifyInstance<Server>): void {
   try {
     staticPlugin = require('fastify-static')
   } catch (e) {
-    if ((e as NodeError).code !== 'MODULE_NOT_FOUND') {
+    if ((e as NodeJS.ErrnoException).code !== 'MODULE_NOT_FOUND') {
       throw e
     }
 
