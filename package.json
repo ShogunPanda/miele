@@ -2,11 +2,11 @@
   "name": "@cowtech/miele",
   "version": "0.15.2",
   "description": "CowTech Fastify utility plugins.",
-  "homepage": "https://github.com/cowtech/miele",
-  "repository": "github:cowtech/miele",
+  "homepage": "https://github.com/ShogunPanda/miele",
+  "repository": "github:ShogunPanda/miele",
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/cowtech/miele/issues"
+    "url": "https://github.com/ShogunPanda/miele/issues"
   },
   "author": "Shogun <shogun@cowtech.it>",
   "license": "ISC",
