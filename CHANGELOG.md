@@ -1,3 +1,7 @@
+### 2019-12-19 / 0.15.2
+
+- chore: Rebuild.
+
 ### 2019-12-19 / 0.15.1
 
 - chore: Added missing files.
