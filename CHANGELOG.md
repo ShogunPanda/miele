@@ -1,3 +1,7 @@
+### 2019-12-21 / 0.15.6
+
+- chore: Updated dependencies.
+
 ### 2019-12-19 / 0.15.5
 
 - chore: Dependencies upgrade.
