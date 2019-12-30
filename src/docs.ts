@@ -1,4 +1,4 @@
-import { get, Route, Schema, SchemaBaseInfo, Spec } from '@cowtech/favo'
+import { Route, Schema, SchemaBaseInfo, Spec } from '@cowtech/favo'
 import { FastifyInstance, Plugin, RouteOptions } from 'fastify'
 import plugin from 'fastify-plugin'
 import { readFileSync } from 'fs'
@@ -14,7 +14,12 @@ export function printRoutes(routes: Array<Route>): void {
   }
 
   routes = routes
-    .filter((r: Route) => !get(r, 'config.hide', false) && !get(r, 'schema.hide', false))
+    .filter((r: Route) => {
+      const schema = (r.schema ?? {}) as Schema
+      const config = (r.config ?? {}) as Schema
+
+      return !schema.hide && !config.hide
+    })
     .sort((a: Route, b: Route) =>
       a.url !== b.url ? a.url.localeCompare(b.url) : (a.method as string).localeCompare(b.method as string)
     )
@@ -26,7 +31,7 @@ export function printRoutes(routes: Array<Route>): void {
     const method = (route.method as string).padEnd(methodMax)
     const url = route.url.padEnd(urlMax).replace(/(?:\:[\w]+|\[\:\w+\])/g, '\x1b[34m$&\x1b[39m')
 
-    return `﹒ \x1b[32m${method}\x1b[0m ${url} \x1b[37m${get(route, 'config.description', '')}\x1b[0m`
+    return `﹒ \x1b[32m${method}\x1b[0m ${url} \x1b[37m${route?.config?.description ?? ''}\x1b[0m`
   })
 
   console.log(`Available routes:\n${output.join('\n')}`)

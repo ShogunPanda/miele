@@ -29,7 +29,7 @@
     "postpublish": "git push origin && git push origin -f --tags"
   },
   "dependencies": {
-    "@cowtech/favo": "^0.10.2",
+    "@cowtech/favo": "^0.11.1",
     "fastify": "^2.11.0",
     "fastify-plugin": "^1.6.0"
   },

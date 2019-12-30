@@ -1,4 +1,4 @@
-import { get, omit, Route, Schema } from '@cowtech/favo'
+import { Route, Schema } from '@cowtech/favo'
 import Ajv from 'ajv'
 import { FastifyInstance } from 'fastify'
 import plugin from 'fastify-plugin'
@@ -8,6 +8,17 @@ import { Server } from 'https'
 
 export interface CustomValidationFormatters {
   [key: string]: (raw: any) => boolean
+}
+
+function omit(source: object, ...properties: Array<string>): object {
+  // Deep clone the object
+  const target = JSON.parse(JSON.stringify(source))
+
+  for (const property of properties) {
+    delete target[property]
+  }
+
+  return target
 }
 
 export async function loadRoutes(
@@ -27,15 +38,15 @@ export async function loadRoutes(
       }
 
       // First of all, if the route has custom models defined, prepare for inclusion
-      const models = get<{ [key: string]: Schema } | false>(route, 'config.models', false)
+      const models = (route.config?.models as { [key: string]: Schema }) ?? false
 
       if (models) {
         const normalizedModels: { [key: string]: Schema } = {}
-        const body = get<Schema>(route, 'schema.body')
+        const body = route.schema?.body as Schema
 
         // Assign models
         for (const [name, definition] of Object.entries(models)) {
-          normalizedModels[`models.${name}`] = omit(definition, ['description', 'ref'])
+          normalizedModels[`models.${name}`] = omit(definition, 'description', 'ref')
         }
 
         route.config.normalizedModels = normalizedModels
@@ -57,7 +68,7 @@ export async function loadRoutes(
             }
           }
 
-          const existingModels = get(route, 'schema.body.components.schemas', {})
+          const existingModels = route.schema.body?.components?.schemas ?? {}
 
           if (!route.schema.body.components) {
             route.schema.body.components = {}
@@ -68,7 +79,7 @@ export async function loadRoutes(
       }
 
       if (customFormats) {
-        Object.assign(customFormats, get(route, 'config.customFormats'))
+        Object.assign(customFormats, route?.config?.customFormats ?? {})
       }
 
       instance.route(route)
