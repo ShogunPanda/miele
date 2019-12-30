@@ -1,13 +1,10 @@
-import { Route, Schema } from '@cowtech/favo'
+import { get, omit, Route, Schema } from '@cowtech/favo'
 import Ajv from 'ajv'
 import { FastifyInstance } from 'fastify'
 import plugin from 'fastify-plugin'
 // @ts-ignore
 import { sync as glob } from 'glob'
 import { Server } from 'https'
-import get from 'lodash.get'
-import omit from 'lodash.omit'
-import set from 'lodash.set'
 
 export interface CustomValidationFormatters {
   [key: string]: (raw: any) => boolean
@@ -30,11 +27,11 @@ export async function loadRoutes(
       }
 
       // First of all, if the route has custom models defined, prepare for inclusion
-      const models: { [key: string]: Schema } = get(route, 'config.models', false)
+      const models = get<{ [key: string]: Schema } | false>(route, 'config.models', false)
 
       if (models) {
         const normalizedModels: { [key: string]: Schema } = {}
-        const body = get(route, 'schema.body')
+        const body = get<Schema>(route, 'schema.body')
 
         // Assign models
         for (const [name, definition] of Object.entries(models)) {
@@ -44,7 +41,7 @@ export async function loadRoutes(
         route.config.normalizedModels = normalizedModels
 
         // Assign the normalizedModels to the body
-        if (body) {
+        if (route.schema && body) {
           /*
             First of all, if the schema has a ref and it's also referenced inside the models,
             make sure it's replace in order to avoid a circular JSON reference.
@@ -52,7 +49,7 @@ export async function loadRoutes(
           const baseName = (body.ref || '').replace(/^models\//, '')
 
           if (baseName.length && models[baseName]) {
-            route.schema!.body = {
+            route.schema.body = {
               $ref: `#/components/schemas/models.${baseName}`,
               components: {
                 schemas: {}
@@ -61,7 +58,12 @@ export async function loadRoutes(
           }
 
           const existingModels = get(route, 'schema.body.components.schemas', {})
-          set(route, 'schema.body.components.schemas', { ...existingModels, ...normalizedModels })
+
+          if (!route.schema.body.components) {
+            route.schema.body.components = {}
+          }
+
+          route.schema.body.components.schemas = { ...existingModels, ...normalizedModels }
         }
       }
 

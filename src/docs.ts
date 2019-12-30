@@ -1,11 +1,10 @@
-import { Route, Schema, SchemaBaseInfo, Spec } from '@cowtech/favo'
+import { get, Route, Schema, SchemaBaseInfo, Spec } from '@cowtech/favo'
 import { FastifyInstance, Plugin, RouteOptions } from 'fastify'
 import plugin from 'fastify-plugin'
 import { readFileSync } from 'fs'
 import { IncomingMessage, ServerResponse } from 'http'
 import { MOVED_PERMANENTLY } from 'http-status-codes'
 import { Server } from 'https'
-import get from 'lodash.get'
 import { resolve } from 'path'
 import { Reply, Request } from './models'
 
