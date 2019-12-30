@@ -1,3 +1,7 @@
+### 2019-12-30 / 0.18.0
+
+- chore: Updated TS settings.
+
 ### 2019-12-30 / 0.17.0
 
 - feat: Simplified code.
