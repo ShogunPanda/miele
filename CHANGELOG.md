@@ -1,3 +1,7 @@
+### 2019-12-30 / 0.17.0
+
+- feat: Simplified code.
+
 ### 2019-12-30 / 0.16.0
 
 - feat: Drop lodash dependencies.
