@@ -1,6 +1,6 @@
 {
   "name": "@cowtech/miele",
-  "version": "0.15.8",
+  "version": "0.16.0",
   "description": "CowTech Fastify utility plugins.",
   "homepage": "https://github.com/ShogunPanda/miele",
   "repository": "github:ShogunPanda/miele",
